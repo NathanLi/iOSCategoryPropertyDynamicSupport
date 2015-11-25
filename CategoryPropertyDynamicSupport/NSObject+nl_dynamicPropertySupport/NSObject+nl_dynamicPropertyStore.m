@@ -60,6 +60,10 @@
         [descriptors addObject:descriptor];
       }
     }
+    
+    if (self != [NSObject class]) {
+      [descriptors addObjectsFromArray:[class_getSuperclass(self) nl_dynamicPropertyDescriptors]];
+    }
   }
   
   return descriptors;
