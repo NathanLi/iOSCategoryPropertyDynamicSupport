@@ -90,7 +90,9 @@ bool __NL__bool_dynamicGetterIMP(id self, SEL _cmd) {
 
 void __NL__object_dynamicSetterIMP(id self, SEL _cmd, id arg) {
   NSString *propertyName = [[self class] nl_dynamicPropertyNameWithSelctor:_cmd];
+//  [self willChangeValueForKey:propertyName];
   [[self nl_dynamicPropertyDictionary] setObject:arg forKey:propertyName];
+//  [self didChangeValueForKey:propertyName];
 }
 
 void __NL__object_dynamicSetterCopyIMP(id self, SEL _cmd, id arg) {
@@ -122,8 +124,15 @@ id __NL__object_dynamicGetterIMP(id self, SEL _cmd) {
   if (resolveInstanceMethod && nl_resolveInstanceMethod) {
     method_exchangeImplementations(resolveInstanceMethod, nl_resolveInstanceMethod);
   }
+  
+  Method setValueForUndefinedKeyMethod = class_getInstanceMethod(self, @selector(setValue:forUndefinedKey:));
+  Method nl_setValueForUndefinedKeyMethod = class_getInstanceMethod(self, @selector(nl_setValue:forUndefinedKey:));
+  if (setValueForUndefinedKeyMethod && nl_setValueForUndefinedKeyMethod) {
+    method_exchangeImplementations(setValueForUndefinedKeyMethod, nl_setValueForUndefinedKeyMethod);
+  }
 }
 
+#pragma mark - swizzle +resolveInstanceMethod and - setValue:forUndefinedKey:
 + (BOOL)nl_resolveInstanceMethod:(SEL)sel {
   NSArray *propertyDescriptors = [self nl_dynamicPropertyDescriptors];
   for (NLPropertyDescriptor *propertyDescriptor in propertyDescriptors) {
@@ -136,6 +145,32 @@ id __NL__object_dynamicGetterIMP(id self, SEL _cmd) {
   return [self nl_resolveInstanceMethod:sel];
 }
 
+/**
+ *  @brief  support for KVO
+ *          由于动态属性的 setter 方法是在 runtime 时增加的，系统的 KVO 寻 key 路径无法得知，
+ *       所以在系统要调用 -setValue:forUndefinedKey: 时，手动调用咱们的 setter 方法
+ */
+- (void)nl_setValue:(id)value forUndefinedKey:(NSString *)key {
+  NSArray *propertyDescriptors = [self.class nl_dynamicPropertyDescriptors];
+  for (NLPropertyDescriptor *propertyDescriptor in propertyDescriptors) {
+    if ([propertyDescriptor.name isEqualToString:key]) {
+      SEL setterSelector = NSSelectorFromString(propertyDescriptor.setterName);
+      if ([self respondsToSelector:setterSelector]) {
+        
+        _Pragma("clang diagnostic push")
+        _Pragma("clang diagnostic ignored \"-Warc-performSelector-leaks\"")
+        [self performSelector:setterSelector withObject:value];
+        _Pragma("clang diagnostic pop")
+        
+      }
+      return;
+    }
+  }
+  
+  [self nl_setValue:value forUndefinedKey:key];
+}
+
+#pragma mark - dynamic add method
 + (BOOL)nl_addMethodWithDescriptor:(NLPropertyDescriptor *)desciptor selector:(SEL)sel {
   NSString *selName = NSStringFromSelector(sel);
   if ([desciptor.setterName isEqualToString:selName]) {

@@ -27,13 +27,13 @@
  *      优点：
  *         1、所有的对象、基本数据类型
  *         2、支持所有带有 [NSValue valueWith...] 方法的结构体（详见 NSValue ）。如：CGRect
- *         3、支持 KVO
- *         4、支持 KVC
- *         5、支持 strong、copy、weak
+ *         3、支持 KVC
+ *         4、支持 strong、copy、weak
  *
  *      不足：
  *         不支持自定义的结构体。
  *         但可以通过 `+ nl_missMethodWithPropertyDescriptor:selector:` 来实现。实现方法可见：（nl_dynamicPropertyCustomeStruct分类）
+ *         NOTE: 不支持VKO
  *
  *
  */

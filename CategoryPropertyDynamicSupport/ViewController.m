@@ -14,6 +14,10 @@
 #import <MapKit/MKGeometry.h>
 #import <CoreMedia/CMTimeRange.h>
 
+@interface NLUIViewController : ViewController
+
+@end
+
 @interface ViewController (nl_ex)
 
 @property (nonatomic, assign) int nl_int;
@@ -56,16 +60,30 @@
 @property (nonatomic, assign) int intB;
 @property (nonatomic, copy) UIView *viewString;
 
+@property (nonatomic, strong) NLUIViewController *subVC;
+
 @property id name;
 @end
 
 @implementation ViewController
 
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
+  fprintf(stdout, "kvo %s = %s\n", [keyPath cStringUsingEncoding:NSUTF8StringEncoding], [[[object valueForKeyPath:keyPath] description] cStringUsingEncoding:NSUTF8StringEncoding]);
+}
+
 - (void)viewDidLoad {
   [super viewDidLoad];
   
+  [self addObserver:self forKeyPath:@"nl_int" options:NSKeyValueObservingOptionNew context:nil];
+  
+  self.subVC = [NLUIViewController new];
+  self.subVC.nl_int = 30;
+  self.subVC.nl_object = [UIView new];
+  
   self.nl_int = 20;
   self.nl_object = [UIView new];
+  [self setValue:@"new nl_object string" forKey:@"nl_object"];
+
   self.nl_bool = YES;
   self.nl_char = 'c';
   self.nl_float = 32.2;
@@ -85,7 +103,7 @@
   UIButton *tempButton = [UIButton new];
   self.nl_weakObject = tempButton;
   self.nl_copyBlock = ^{
-    fprintf(stdout, "call copy block\n");
+    fprintf(stdout, "nl_object: just printf call copy block\n");
   };
   
   self.nl_coordinate = CLLocationCoordinate2DMake(21.016f, 135.05135f);
@@ -105,6 +123,9 @@
 
 - (void)viewDidAppear:(BOOL)animated {
   [super viewDidAppear:animated];
+  
+  fprintf(stdout, "sub class nl_int = %d\n", self.subVC.nl_int);
+  fprintf(stdout, "sub class nl_object = %s\n\n", [[self.subVC.nl_object description] cStringUsingEncoding:NSUTF8StringEncoding]);
   
   fprintf(stdout, "nl_int = %d\n", self.nl_int);
   fprintf(stdout, "nl_object = %s\n", [[self.nl_object description] cStringUsingEncoding:NSUTF8StringEncoding]);
@@ -184,5 +205,11 @@
 @dynamic nl_matrix4;
 @dynamic nl_scnvector4;
 @dynamic nl_scnvector3;
+
+@end
+
+
+
+@implementation NLUIViewController
 
 @end
