@@ -194,7 +194,9 @@ return [[[self nl_dynamicPropertyDictionary] objectForKey:propertyName] typeName
 #define NLDefineDynamicIMPSetterCustomeStructType(typeName) \
 void NLDynamicIMPNameSetterCustomeStructType(typeName)(id self, SEL _cmd, typeName arg) {\
 NSString *propertyName = [[self class] nl_dynamicPropertyNameWithSelctor:_cmd];\
+[self willChangeValueForKey:propertyName];\
 [[self nl_dynamicPropertyDictionary] setObject:[NSValue valueWith##typeName:arg] forKey:propertyName];\
+[self didChangeValueForKey:propertyName];\
 }
 
 #define NLDefineDynamicIMPCustomeStructType(typeName) \
@@ -210,6 +212,70 @@ NLDefineDynamicIMPCustomeStructType(NLSCNVector3);
 NLDefineDynamicIMPCustomeStructType(NLSCNVector4);
 NLDefineDynamicIMPCustomeStructType(NLSCNMatrix4);
 
+@interface NLPropertyDescriptor (nl_customeStruct)
+
+- (BOOL)nl_isNLCLLocationCoordinate2D;
+- (BOOL)nl_isNLMKCoordinateSpan;
+- (BOOL)nl_isNLCMTime;
+- (BOOL)nl_isNLCMTimeRange;
+- (BOOL)nl_isNLCMTimeMapping;
+- (BOOL)nl_isNLSCNVector3;
+- (BOOL)nl_isNLSCNVector4;
+- (BOOL)nl_isNLSCNMatrix4;
+
+- (NSString *)nl_anonymityPropertyEncode;
+
+@end
+
+@implementation NLPropertyDescriptor (nl_customeStruct)
+
+- (NSString *)nl_anonymityPropertyEncode {
+  NSString *propertyEncode = objc_getAssociatedObject(self, _cmd);
+  
+  if (propertyEncode == nil) {
+    propertyEncode = [self.typeEncoding stringByReplacingOccurrencesOfString:@"\\{\\w+=" withString:@"{?=" options:NSRegularExpressionSearch range:NSMakeRange(0, [self.typeEncoding length])];
+    if ([propertyEncode hasPrefix:@"T"]) {
+      propertyEncode = [propertyEncode substringFromIndex:1];
+    }
+    objc_setAssociatedObject(self, _cmd, propertyEncode, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  }
+  return propertyEncode;
+}
+
+- (BOOL)nl_isNLCLLocationCoordinate2D {
+  return [[self nl_anonymityPropertyEncode] isEqualToString:[NSString stringWithCString:@encode(NLCLLocationCoordinate2D) encoding:NSUTF8StringEncoding]];
+}
+
+- (BOOL)nl_isNLMKCoordinateSpan {
+  return [[self nl_anonymityPropertyEncode] isEqualToString:[NSString stringWithCString:@encode(NLMKCoordinateSpan) encoding:NSUTF8StringEncoding]];
+}
+
+- (BOOL)nl_isNLCMTime {
+  return [[self nl_anonymityPropertyEncode] isEqualToString:[NSString stringWithCString:@encode(NLCMTime) encoding:NSUTF8StringEncoding]];
+}
+
+- (BOOL)nl_isNLCMTimeRange {
+  return [[self nl_anonymityPropertyEncode] isEqualToString:[NSString stringWithCString:@encode(NLCMTimeRange) encoding:NSUTF8StringEncoding]];
+}
+
+- (BOOL)nl_isNLCMTimeMapping {
+  return [[self nl_anonymityPropertyEncode] isEqualToString:[NSString stringWithCString:@encode(NLCMTimeMapping) encoding:NSUTF8StringEncoding]];
+}
+
+- (BOOL)nl_isNLSCNVector3 {
+  return [[self nl_anonymityPropertyEncode] isEqualToString:[NSString stringWithCString:@encode(NLSCNVector3) encoding:NSUTF8StringEncoding]];
+}
+
+- (BOOL)nl_isNLSCNVector4 {
+  return [[self nl_anonymityPropertyEncode] isEqualToString:[NSString stringWithCString:@encode(NLSCNVector4) encoding:NSUTF8StringEncoding]];
+}
+
+- (BOOL)nl_isNLSCNMatrix4 {
+  return [[self nl_anonymityPropertyEncode] isEqualToString:[NSString stringWithCString:@encode(NLSCNMatrix4) encoding:NSUTF8StringEncoding]];
+}
+
+@end
+
 @implementation NSObject (nl_dynamicPropertyCustomeStruct)
 
 + (void)load {
@@ -218,8 +284,15 @@ NLDefineDynamicIMPCustomeStructType(NLSCNMatrix4);
   if (nl_missMethod && nl_customeStruct_missMethod) {
     method_exchangeImplementations(nl_missMethod, nl_customeStruct_missMethod);
   }
+  
+  Method setValueMethod = class_getInstanceMethod(self, @selector(setValue:forKey:));
+  Method customeSetValueMethod = class_getInstanceMethod(self, @selector(custome_nl_setValue:forKey:));
+  if (setValueMethod && customeSetValueMethod) {
+    method_exchangeImplementations(setValueMethod, customeSetValueMethod);
+  }
 }
 
+#pragma mark - dynamic add getter setter
 + (BOOL)nl_customeStruct_missMethodWithPropertyDescriptor:(NLPropertyDescriptor *)descriptor selector:(SEL)sel {
   NSString *selectorName = NSStringFromSelector(sel);
   if ([descriptor.getterName isEqualToString:selectorName]) {
@@ -234,41 +307,37 @@ NLDefineDynamicIMPCustomeStructType(NLSCNMatrix4);
 }
 
 + (BOOL)nl_customeStruct_setterMethodWithPropertyDescriptor:(NLPropertyDescriptor *)descriptor {
-  NSString *propertyEncode = [descriptor.typeEncoding stringByReplacingOccurrencesOfString:@"\\{\\w+=" withString:@"{?=" options:NSRegularExpressionSearch range:NSMakeRange(0, [descriptor.typeEncoding length])];
   IMP imp = NULL;
-  if ([propertyEncode hasPrefix:@"T"]) {
-    propertyEncode = [propertyEncode substringFromIndex:1];
-  }
   
-  if ([propertyEncode isEqualToString:[NSString stringWithCString:@encode(NLCLLocationCoordinate2D) encoding:NSUTF8StringEncoding]]) {
+  if ([descriptor nl_isNLCLLocationCoordinate2D]) {
     imp = (IMP)NLDynamicIMPNameSetterCustomeStructType(NLCLLocationCoordinate2D);
   }
   
-  if (imp == NULL && [propertyEncode isEqualToString:[NSString stringWithCString:@encode(NLMKCoordinateSpan) encoding:NSUTF8StringEncoding]]) {
+  if (imp == NULL && [descriptor nl_isNLMKCoordinateSpan]) {
     imp = (IMP)NLDynamicIMPNameSetterCustomeStructType(NLMKCoordinateSpan);
   }
   
-  if (imp == NULL && [propertyEncode isEqualToString:[NSString stringWithCString:@encode(NLCMTime) encoding:NSUTF8StringEncoding]]) {
+  if (imp == NULL && [descriptor nl_isNLCMTime]) {
     imp = (IMP)NLDynamicIMPNameSetterCustomeStructType(NLCMTime);
   }
   
-  if (imp == NULL && [propertyEncode isEqualToString:[NSString stringWithCString:@encode(NLCMTimeRange) encoding:NSUTF8StringEncoding]]) {
+  if (imp == NULL && [descriptor nl_isNLCMTimeRange]) {
     imp = (IMP)NLDynamicIMPNameSetterCustomeStructType(NLCMTimeRange);
   }
   
-  if (imp == NULL && [propertyEncode isEqualToString:[NSString stringWithCString:@encode(NLCMTimeMapping) encoding:NSUTF8StringEncoding]]) {
+  if (imp == NULL && [descriptor nl_isNLCMTimeMapping]) {
     imp = (IMP)NLDynamicIMPNameSetterCustomeStructType(NLCMTimeMapping);
   }
   
-  if (imp == NULL && [propertyEncode isEqualToString:[NSString stringWithCString:@encode(NLSCNVector3) encoding:NSUTF8StringEncoding]]) {
+  if (imp == NULL && [descriptor nl_isNLSCNVector3]) {
     imp = (IMP)NLDynamicIMPNameSetterCustomeStructType(NLSCNVector3);
   }
   
-  if (imp == NULL && [propertyEncode isEqualToString:[NSString stringWithCString:@encode(NLSCNVector4) encoding:NSUTF8StringEncoding]]) {
+  if (imp == NULL && [descriptor nl_isNLSCNVector4]) {
     imp = (IMP)NLDynamicIMPNameSetterCustomeStructType(NLSCNVector4);
   }
   
-  if (imp == NULL && [propertyEncode isEqualToString:[NSString stringWithCString:@encode(NLSCNMatrix4) encoding:NSUTF8StringEncoding]]) {
+  if (imp == NULL && [descriptor nl_isNLSCNMatrix4]) {
     imp = (IMP)NLDynamicIMPNameSetterCustomeStructType(NLSCNMatrix4);
   }
   
@@ -281,40 +350,36 @@ NLDefineDynamicIMPCustomeStructType(NLSCNMatrix4);
 }
 
 + (BOOL)nl_customeStruct_getterMethodWithPropertyDescriptor:(NLPropertyDescriptor *)descriptor {
-  NSString *propertyEncode = [descriptor.typeEncoding stringByReplacingOccurrencesOfString:@"\\{\\w+=" withString:@"{?=" options:NSRegularExpressionSearch range:NSMakeRange(0, [descriptor.typeEncoding length])];
-  if ([propertyEncode hasPrefix:@"T"]) {
-    propertyEncode = [propertyEncode substringFromIndex:1];
-  }
   IMP imp = NULL;
-  if ([propertyEncode isEqualToString:[NSString stringWithCString:@encode(NLCLLocationCoordinate2D) encoding:NSUTF8StringEncoding]]) {
+  if ([descriptor nl_isNLCLLocationCoordinate2D]) {
     imp = (IMP)NLDynamicIMPNameGetterCustomeStructType(NLCLLocationCoordinate2D);
   }
   
-  if (imp == NULL && [propertyEncode isEqualToString:[NSString stringWithCString:@encode(NLMKCoordinateSpan) encoding:NSUTF8StringEncoding]]) {
+  if (imp == NULL && [descriptor nl_isNLMKCoordinateSpan]) {
     imp = (IMP)NLDynamicIMPNameGetterCustomeStructType(NLMKCoordinateSpan);
   }
   
-  if (imp == NULL && [propertyEncode isEqualToString:[NSString stringWithCString:@encode(NLCMTime) encoding:NSUTF8StringEncoding]]) {
+  if (imp == NULL && [descriptor nl_isNLCMTime]) {
     imp = (IMP)NLDynamicIMPNameGetterCustomeStructType(NLCMTime);
   }
   
-  if (imp == NULL && [propertyEncode isEqualToString:[NSString stringWithCString:@encode(NLCMTimeRange) encoding:NSUTF8StringEncoding]]) {
+  if (imp == NULL && [descriptor nl_isNLCMTimeRange]) {
     imp = (IMP)NLDynamicIMPNameGetterCustomeStructType(NLCMTimeRange);
   }
   
-  if (imp == NULL && [propertyEncode isEqualToString:[NSString stringWithCString:@encode(NLCMTimeMapping) encoding:NSUTF8StringEncoding]]) {
+  if (imp == NULL && [descriptor nl_isNLCMTimeMapping]) {
     imp = (IMP)NLDynamicIMPNameGetterCustomeStructType(NLCMTimeMapping);
   }
   
-  if (imp == NULL && [propertyEncode isEqualToString:[NSString stringWithCString:@encode(NLSCNVector3) encoding:NSUTF8StringEncoding]]) {
+  if (imp == NULL && [descriptor nl_isNLSCNVector3]) {
     imp = (IMP)NLDynamicIMPNameGetterCustomeStructType(NLSCNVector3);
   }
   
-  if (imp == NULL && [propertyEncode isEqualToString:[NSString stringWithCString:@encode(NLSCNVector4) encoding:NSUTF8StringEncoding]]) {
+  if (imp == NULL && [descriptor nl_isNLSCNVector4]) {
     imp = (IMP)NLDynamicIMPNameGetterCustomeStructType(NLSCNVector4);
   }
   
-  if (imp == NULL && [propertyEncode isEqualToString:[NSString stringWithCString:@encode(NLSCNMatrix4) encoding:NSUTF8StringEncoding]]) {
+  if (imp == NULL && [descriptor nl_isNLSCNMatrix4]) {
     imp = (IMP)NLDynamicIMPNameGetterCustomeStructType(NLSCNMatrix4);
   }
   
@@ -324,6 +389,77 @@ NLDefineDynamicIMPCustomeStructType(NLSCNMatrix4);
   }
   
   return NO;
+}
+
+#pragma mark - KVC
+- (void)custome_nl_setValue:(id)value forKey:(NSString *)key {
+  if (![key hasPrefix:@"nl_"]) {
+    [self custome_nl_setValue:value forKey:key];
+    return;
+  }
+  
+  NSArray *propertyDescriptors = [self.class nl_dynamicPropertyDescriptors];
+  NLPropertyDescriptor *keyPropertyDescriptor = nil;
+  SEL setterSelector = nil;
+  
+  for (NLPropertyDescriptor *propertyDescriptor in propertyDescriptors) {
+    if ([propertyDescriptor.name isEqualToString:key]) {
+      if ([self respondsToSelector:NSSelectorFromString(propertyDescriptor.setterName)]) {
+        keyPropertyDescriptor = propertyDescriptor;
+        setterSelector = NSSelectorFromString(propertyDescriptor.setterName);
+      }
+      break;
+    }
+  }
+  
+  // 如果不是对象，则一定是基础类型或结构体
+  // 而这两者所对象的类一定是 NSValue
+  if (![value isKindOfClass:[NSValue class]]) {
+    [self custome_nl_setValue:value forKey:key];
+    return;
+  }
+  
+  if ([keyPropertyDescriptor nl_isNLCLLocationCoordinate2D]) {
+    NLDynamicIMPNameSetterCustomeStructType(NLCLLocationCoordinate2D)(self, setterSelector, [value NLCLLocationCoordinate2DValue]);
+    return;
+  }
+  
+  if ([keyPropertyDescriptor nl_isNLMKCoordinateSpan]) {
+    NLDynamicIMPNameSetterCustomeStructType(NLMKCoordinateSpan)(self, setterSelector, [value NLMKCoordinateSpanValue]);
+    return;
+  }
+  
+  if ([keyPropertyDescriptor nl_isNLCMTime]) {
+    NLDynamicIMPNameSetterCustomeStructType(NLCMTime)(self, setterSelector, [value NLCMTimeValue]);
+    return;
+  }
+  
+  if ([keyPropertyDescriptor nl_isNLCMTimeRange]) {
+    NLDynamicIMPNameSetterCustomeStructType(NLCMTimeRange)(self, setterSelector, [value NLCMTimeRangeValue]);
+    return;
+  }
+  
+  if ([keyPropertyDescriptor nl_isNLCMTimeMapping]) {
+    NLDynamicIMPNameSetterCustomeStructType(NLCMTimeMapping)(self, setterSelector, [value NLCMTimeMappingValue]);
+    return;
+  }
+  
+  if ([keyPropertyDescriptor nl_isNLSCNVector3]) {
+    NLDynamicIMPNameSetterCustomeStructType(NLSCNVector3)(self, setterSelector, [value NLSCNVector3Value]);
+    return;
+  }
+  
+  if ([keyPropertyDescriptor nl_isNLSCNVector4]) {
+    NLDynamicIMPNameSetterCustomeStructType(NLSCNVector4)(self, setterSelector, [value NLSCNVector4Value]);
+    return;
+  }
+  
+  if ([keyPropertyDescriptor nl_isNLSCNMatrix4]) {
+    NLDynamicIMPNameSetterCustomeStructType(NLSCNMatrix4)(self, setterSelector, [value NLSCNMatrix4Value]);
+    return;
+  }
+  
+  [self custome_nl_setValue:value forKey:key];
 }
 
 @end

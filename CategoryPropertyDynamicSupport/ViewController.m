@@ -59,6 +59,7 @@
 
 @property (nonatomic, assign) int intB;
 @property (nonatomic, copy) UIView *viewString;
+@property (nonatomic, strong) id obj;
 
 @property (nonatomic, strong) NLUIViewController *subVC;
 
@@ -75,15 +76,21 @@
   [super viewDidLoad];
   
   [self addObserver:self forKeyPath:@"nl_int" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_object" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_bool" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_weakObject" options:NSKeyValueObservingOptionNew context:nil];
+//  [self addObserver:self forKeyPath:@"nl_rect" options:NSKeyValueObservingOptionNew context:nil];
   
   self.subVC = [NLUIViewController new];
   self.subVC.nl_int = 30;
   self.subVC.nl_object = [UIView new];
+  [self setValue:@40 forKeyPath:@"subVC.nl_int"];
   
   self.nl_int = 20;
   self.nl_object = [UIView new];
+  [self setValue:@34 forKey:@"nl_int"];
   [self setValue:@"new nl_object string" forKey:@"nl_object"];
-
+  
   self.nl_bool = YES;
   self.nl_char = 'c';
   self.nl_float = 32.2;
@@ -92,6 +99,8 @@
   self.nl_uint = 24;
   
   self.nl_rect = CGRectMake(10, 10, 100, 100);
+  [self setValue:[NSValue valueWithCGRect:CGRectMake(0, 0, 200, 200)] forKey:@"nl_rect"];
+  
   self.nl_point = CGPointMake(10, 10);
   self.nl_size = CGSizeMake(100, 100);
   self.nl_vector = CGVectorMake(20.0, 20.0);
@@ -101,13 +110,16 @@
   self.nl_transform3D = CATransform3DMakeRotation(90, 1, 1, 1);
   
   UIButton *tempButton = [UIButton new];
-  self.nl_weakObject = tempButton;
+  self.obj = tempButton;
+  self.nl_weakObject = self.obj;
   self.nl_copyBlock = ^{
     fprintf(stdout, "nl_object: just printf call copy block\n");
   };
   
   self.nl_coordinate = CLLocationCoordinate2DMake(21.016f, 135.05135f);
   self.nl_coordinateSpan = MKCoordinateSpanMake(32.51f, 145.6156f);
+  // KVC
+  [self setValue:[NSValue valueWithMKCoordinate:CLLocationCoordinate2DMake(32.051f, 154.053f)] forKey:@"nl_coordinate"];
   
   self.nl_cmtime = CMTimeMake(1000, 24);
   self.nl_cmtimeRange = CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithEpoch(2400, 24, 0));
@@ -121,10 +133,16 @@
   self.nl_matrix4 = SCNMatrix4MakeScale(1.0, 1.0, 1.0);
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+  [super viewWillAppear:animated];
+  
+  self.obj = nil;
+}
+
 - (void)viewDidAppear:(BOOL)animated {
   [super viewDidAppear:animated];
   
-  fprintf(stdout, "sub class nl_int = %d\n", self.subVC.nl_int);
+  fprintf(stdout, "\nsub class nl_int = %d\n", self.subVC.nl_int);
   fprintf(stdout, "sub class nl_object = %s\n\n", [[self.subVC.nl_object description] cStringUsingEncoding:NSUTF8StringEncoding]);
   
   fprintf(stdout, "nl_int = %d\n", self.nl_int);

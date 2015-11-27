@@ -30,7 +30,9 @@ return [[[self nl_dynamicPropertyDictionary] objectForKey:propertyName] typeName
 #define NLDefineDynamicIMPSetterBaseDataType(typeName, BaseType) \
 void NLDynamicIMPNameSetterBaseDataType(typeName)(id self, SEL _cmd, BaseType arg) {\
 NSString *propertyName = [[self class] nl_dynamicPropertyNameWithSelctor:_cmd];\
+[self willChangeValueForKey:propertyName];\
 [[self nl_dynamicPropertyDictionary] setObject:@(arg) forKey:propertyName];\
+[self didChangeValueForKey:propertyName];\
 }\
 
 #define NLDefineDynamicIMPBaseDataType(name, BaseType) \
@@ -64,7 +66,9 @@ return [[[self nl_dynamicPropertyDictionary] objectForKey:propertyName] typeName
 #define NLDefineDynamicIMPSetterStructType(typeName) \
 void NLDynamicIMPNameSetterStructType(typeName)(id self, SEL _cmd, typeName arg) {\
 NSString *propertyName = [[self class] nl_dynamicPropertyNameWithSelctor:_cmd];\
+[self willChangeValueForKey:propertyName];\
 [[self nl_dynamicPropertyDictionary] setObject:[NSValue valueWith##typeName:arg] forKey:propertyName];\
+[self didChangeValueForKey:propertyName];\
 }
 
 #define NLDefineDynamicIMPStructType(typeName) \
@@ -90,24 +94,33 @@ bool __NL__bool_dynamicGetterIMP(id self, SEL _cmd) {
 
 void __NL__object_dynamicSetterIMP(id self, SEL _cmd, id arg) {
   NSString *propertyName = [[self class] nl_dynamicPropertyNameWithSelctor:_cmd];
-//  [self willChangeValueForKey:propertyName];
+  [self willChangeValueForKey:propertyName];
   [[self nl_dynamicPropertyDictionary] setObject:arg forKey:propertyName];
-//  [self didChangeValueForKey:propertyName];
+  [self didChangeValueForKey:propertyName];
 }
 
 void __NL__object_dynamicSetterCopyIMP(id self, SEL _cmd, id arg) {
   NSString *propertyName = [[self class] nl_dynamicPropertyNameWithSelctor:_cmd];
+  [self willChangeValueForKey:propertyName];
   [[self nl_dynamicPropertyDictionary] setObject:[arg copy] forKey:propertyName];
+  [self didChangeValueForKey:propertyName];
 }
 
 void __NL__object_dynamicSetterWeakIMP(id self, SEL _cmd, id arg) {
   NSString *propertyName = [[self class] nl_dynamicPropertyNameWithSelctor:_cmd];
+  [self willChangeValueForKey:propertyName];
   [[self nl_dynamicPropertyWeakDictionary] setObject:arg forKey:propertyName];
+  [self didChangeValueForKey:propertyName];
 }
 
 id __NL__object_dynamicGetterIMP(id self, SEL _cmd) {
   NSString *propertyName = [[self class] nl_dynamicPropertyNameWithSelctor:_cmd];
   return [[self nl_dynamicPropertyDictionary] objectForKey:propertyName];
+}
+
+id __NL__object_dynamicGetterWeakIMP(id self, SEL _cmd) {
+  NSString *propertyName = [[self class] nl_dynamicPropertyNameWithSelctor:_cmd];
+  return [[self nl_dynamicPropertyWeakDictionary] objectForKey:propertyName];
 }
 
 @interface NSObject (nl_dynamicSupport)
@@ -125,10 +138,10 @@ id __NL__object_dynamicGetterIMP(id self, SEL _cmd) {
     method_exchangeImplementations(resolveInstanceMethod, nl_resolveInstanceMethod);
   }
   
-  Method setValueForUndefinedKeyMethod = class_getInstanceMethod(self, @selector(setValue:forUndefinedKey:));
-  Method nl_setValueForUndefinedKeyMethod = class_getInstanceMethod(self, @selector(nl_setValue:forUndefinedKey:));
-  if (setValueForUndefinedKeyMethod && nl_setValueForUndefinedKeyMethod) {
-    method_exchangeImplementations(setValueForUndefinedKeyMethod, nl_setValueForUndefinedKeyMethod);
+  Method setValueForKeyMethod = class_getInstanceMethod(self, @selector(setValue:forKey:));
+  Method nl_setValueForKeyMethod = class_getInstanceMethod(self, @selector(nl_setValue:forKey:));
+  if (setValueForKeyMethod && nl_setValueForKeyMethod) {
+    method_exchangeImplementations(setValueForKeyMethod, nl_setValueForKeyMethod);
   }
 }
 
@@ -148,26 +161,114 @@ id __NL__object_dynamicGetterIMP(id self, SEL _cmd) {
 /**
  *  @brief  support for KVO
  *          由于动态属性的 setter 方法是在 runtime 时增加的，系统的 KVO 寻 key 路径无法得知，
- *       所以在系统要调用 -setValue:forUndefinedKey: 时，手动调用咱们的 setter 方法
+ *       所以在系统要调用 -setValue:forKey: 时，手动调用咱们的 setter 方法
  */
-- (void)nl_setValue:(id)value forUndefinedKey:(NSString *)key {
+- (void)nl_setValue:(id)value forKey:(NSString *)key {
+  if (![key hasPrefix:@"nl_"]) {
+    [self nl_setValue:value forKey:key];
+    return;
+  }
+  
   NSArray *propertyDescriptors = [self.class nl_dynamicPropertyDescriptors];
+  NLPropertyDescriptor *keyPropertyDescriptor = nil;
+  SEL setterSelector = nil;
+  
   for (NLPropertyDescriptor *propertyDescriptor in propertyDescriptors) {
     if ([propertyDescriptor.name isEqualToString:key]) {
-      SEL setterSelector = NSSelectorFromString(propertyDescriptor.setterName);
-      if ([self respondsToSelector:setterSelector]) {
-        
-        _Pragma("clang diagnostic push")
-        _Pragma("clang diagnostic ignored \"-Warc-performSelector-leaks\"")
-        [self performSelector:setterSelector withObject:value];
-        _Pragma("clang diagnostic pop")
-        
+      if ([self respondsToSelector:NSSelectorFromString(propertyDescriptor.setterName)]) {
+        keyPropertyDescriptor = propertyDescriptor;
+        setterSelector = NSSelectorFromString(propertyDescriptor.setterName);
       }
-      return;
+      break;
     }
   }
   
-  [self nl_setValue:value forUndefinedKey:key];
+  if (keyPropertyDescriptor == nil || setterSelector == nil) {
+    [self nl_setValue:value forKey:key];
+    return;
+  }
+  
+  if ([keyPropertyDescriptor isObjectType]){
+    _Pragma("clang diagnostic push")
+    _Pragma("clang diagnostic ignored \"-Warc-performSelector-leaks\"")
+    [self performSelector:setterSelector withObject:value];
+    _Pragma("clang diagnostic pop")
+    return;
+  }
+  
+  // 如果不是对象，则一定是基础类型或结构体
+  // 而这两者所对象的类一定是 NSValue
+  if (![value isKindOfClass:[NSValue class]]) {
+    [self nl_setValue:value forKey:key];
+    return;
+  }
+  
+  if ([keyPropertyDescriptor isCharType]
+      || [keyPropertyDescriptor isIntType]
+      || [keyPropertyDescriptor isShortType]
+      || [keyPropertyDescriptor isLongType]
+      || [keyPropertyDescriptor isLongLongType]
+      || [keyPropertyDescriptor isBoolType]
+      || [keyPropertyDescriptor isUCharType]
+      || [keyPropertyDescriptor isUIntType]
+      || [keyPropertyDescriptor isUShortType]
+      || [keyPropertyDescriptor isULongType]
+      || [keyPropertyDescriptor isULongLongType]) {
+    NLDynamicIMPNameSetterBaseDataType(unsignedLongLong)(self, setterSelector, [value unsignedLongLongValue]);
+    return;
+  }
+  
+  if ([keyPropertyDescriptor isFloatType]) {
+    NLDynamicIMPNameSetterBaseDataType(float)(self, setterSelector, [value floatValue]);
+    return;
+  }
+  
+  if ([keyPropertyDescriptor isDoubleType]) {
+    NLDynamicIMPNameSetterBaseDataType(double)(self, setterSelector, [value doubleValue]);
+    return;
+  }
+  
+  if ([keyPropertyDescriptor isRectType]) {
+    NLDynamicIMPNameSetterStructType(CGRect)(self, setterSelector, [value CGRectValue]);
+    return;
+  }
+  
+  if ([keyPropertyDescriptor isPointType]) {
+    NLDynamicIMPNameSetterStructType(CGPoint)(self, setterSelector, [value CGPointValue]);
+    return;
+  }
+  
+  if ([keyPropertyDescriptor isSizeType]) {
+    NLDynamicIMPNameSetterStructType(CGSize)(self, setterSelector, [value CGSizeValue]);
+    return;
+  }
+  
+  if ([keyPropertyDescriptor isVectorType]) {
+    NLDynamicIMPNameSetterStructType(CGVector)(self, setterSelector, [value CGVectorValue]);
+    return;
+  }
+  
+  if ([keyPropertyDescriptor isOffsetType]) {
+    NLDynamicIMPNameSetterStructType(UIOffset)(self, setterSelector, [value UIOffsetValue]);
+    return;
+  }
+  
+  if ([keyPropertyDescriptor isEdgeInsetsType]) {
+    NLDynamicIMPNameSetterStructType(UIEdgeInsets)(self, setterSelector, [value UIEdgeInsetsValue]);
+    return;
+  }
+  
+  if ([keyPropertyDescriptor isAffineTransormType]) {
+    NLDynamicIMPNameSetterStructType(CGAffineTransform)(self, setterSelector, [value CGAffineTransformValue]);
+    return;
+  }
+  
+  if ([keyPropertyDescriptor isTransorm3DType]) {
+    NLDynamicIMPNameSetterStructType(CATransform3D)(self, setterSelector, [value CATransform3DValue]);
+    return;
+  }
+  
+  [self nl_setValue:value forKey:key];
 }
 
 #pragma mark - dynamic add method
@@ -311,7 +412,11 @@ id __NL__object_dynamicGetterIMP(id self, SEL _cmd) {
   
   
   if ([desciptor isObjectType]) {
-    class_addMethod(self, selector, (IMP)__NL__object_dynamicGetterIMP, "@@:");
+    if (desciptor.propertyPolicy == NLPropertyPolicyWeak) {
+      class_addMethod(self, selector, (IMP)__NL__object_dynamicGetterWeakIMP, "@@:");
+    } else {
+      class_addMethod(self, selector, (IMP)__NL__object_dynamicGetterIMP, "@@:");
+    }
     return YES;
   }
   
