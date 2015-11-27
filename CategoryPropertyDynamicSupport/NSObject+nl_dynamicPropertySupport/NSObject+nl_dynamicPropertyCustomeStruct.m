@@ -194,9 +194,7 @@ return [[[self nl_dynamicPropertyDictionary] objectForKey:propertyName] typeName
 #define NLDefineDynamicIMPSetterCustomeStructType(typeName) \
 void NLDynamicIMPNameSetterCustomeStructType(typeName)(id self, SEL _cmd, typeName arg) {\
 NSString *propertyName = [[self class] nl_dynamicPropertyNameWithSelctor:_cmd];\
-[self willChangeValueForKey:propertyName];\
 [[self nl_dynamicPropertyDictionary] setObject:[NSValue valueWith##typeName:arg] forKey:propertyName];\
-[self didChangeValueForKey:propertyName];\
 }
 
 #define NLDefineDynamicIMPCustomeStructType(typeName) \

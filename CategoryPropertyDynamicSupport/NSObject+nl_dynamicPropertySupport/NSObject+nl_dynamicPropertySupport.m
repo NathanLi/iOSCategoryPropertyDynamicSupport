@@ -30,9 +30,7 @@ return [[[self nl_dynamicPropertyDictionary] objectForKey:propertyName] typeName
 #define NLDefineDynamicIMPSetterBaseDataType(typeName, BaseType) \
 void NLDynamicIMPNameSetterBaseDataType(typeName)(id self, SEL _cmd, BaseType arg) {\
 NSString *propertyName = [[self class] nl_dynamicPropertyNameWithSelctor:_cmd];\
-[self willChangeValueForKey:propertyName];\
 [[self nl_dynamicPropertyDictionary] setObject:@(arg) forKey:propertyName];\
-[self didChangeValueForKey:propertyName];\
 }\
 
 #define NLDefineDynamicIMPBaseDataType(name, BaseType) \
@@ -66,9 +64,7 @@ return [[[self nl_dynamicPropertyDictionary] objectForKey:propertyName] typeName
 #define NLDefineDynamicIMPSetterStructType(typeName) \
 void NLDynamicIMPNameSetterStructType(typeName)(id self, SEL _cmd, typeName arg) {\
 NSString *propertyName = [[self class] nl_dynamicPropertyNameWithSelctor:_cmd];\
-[self willChangeValueForKey:propertyName];\
 [[self nl_dynamicPropertyDictionary] setObject:[NSValue valueWith##typeName:arg] forKey:propertyName];\
-[self didChangeValueForKey:propertyName];\
 }
 
 #define NLDefineDynamicIMPStructType(typeName) \
@@ -94,23 +90,17 @@ bool __NL__bool_dynamicGetterIMP(id self, SEL _cmd) {
 
 void __NL__object_dynamicSetterIMP(id self, SEL _cmd, id arg) {
   NSString *propertyName = [[self class] nl_dynamicPropertyNameWithSelctor:_cmd];
-  [self willChangeValueForKey:propertyName];
   [[self nl_dynamicPropertyDictionary] setObject:arg forKey:propertyName];
-  [self didChangeValueForKey:propertyName];
 }
 
 void __NL__object_dynamicSetterCopyIMP(id self, SEL _cmd, id arg) {
   NSString *propertyName = [[self class] nl_dynamicPropertyNameWithSelctor:_cmd];
-  [self willChangeValueForKey:propertyName];
   [[self nl_dynamicPropertyDictionary] setObject:[arg copy] forKey:propertyName];
-  [self didChangeValueForKey:propertyName];
 }
 
 void __NL__object_dynamicSetterWeakIMP(id self, SEL _cmd, id arg) {
   NSString *propertyName = [[self class] nl_dynamicPropertyNameWithSelctor:_cmd];
-  [self willChangeValueForKey:propertyName];
   [[self nl_dynamicPropertyWeakDictionary] setObject:arg forKey:propertyName];
-  [self didChangeValueForKey:propertyName];
 }
 
 id __NL__object_dynamicGetterIMP(id self, SEL _cmd) {

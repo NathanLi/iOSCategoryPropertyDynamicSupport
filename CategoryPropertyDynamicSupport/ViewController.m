@@ -68,18 +68,11 @@
 
 @implementation ViewController
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
-  fprintf(stdout, "kvo %s = %s\n", [keyPath cStringUsingEncoding:NSUTF8StringEncoding], [[[object valueForKeyPath:keyPath] description] cStringUsingEncoding:NSUTF8StringEncoding]);
-}
-
 - (void)viewDidLoad {
   [super viewDidLoad];
   
-  [self addObserver:self forKeyPath:@"nl_int" options:NSKeyValueObservingOptionNew context:nil];
-  [self addObserver:self forKeyPath:@"nl_object" options:NSKeyValueObservingOptionNew context:nil];
-  [self addObserver:self forKeyPath:@"nl_bool" options:NSKeyValueObservingOptionNew context:nil];
-  [self addObserver:self forKeyPath:@"nl_weakObject" options:NSKeyValueObservingOptionNew context:nil];
-//  [self addObserver:self forKeyPath:@"nl_rect" options:NSKeyValueObservingOptionNew context:nil];
+  // do not support KVO
+//  [self addObserver:self forKeyPath:@"nl_int" options:NSKeyValueObservingOptionNew context:nil];
   
   self.subVC = [NLUIViewController new];
   self.subVC.nl_int = 30;

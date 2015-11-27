@@ -26,7 +26,7 @@
  *
  *      优点：
  *         1、所有的对象、基本数据类型
- *         2、支持所有带有 [NSValue valueWith...] 方法的结构体（详见 NSValue ）。如：CGRect
+ *         2、支持系统已有的 [NSValue valueWith...] 方法的结构体（详见 NSValue ）。如：CGRect
  *         3、支持 KVC
  *         4、支持 strong、copy、weak
  *
@@ -34,6 +34,9 @@
  *         不支持自定义的结构体。
  *         但可以通过 `+ nl_missMethodWithPropertyDescriptor:selector:` 来实现。实现方法可见：（nl_dynamicPropertyCustomeStruct分类）
  *         NOTE: 不支持VKO
+ *               不支持KVO原因：虽然可以在 setter 方法中加入相应的 KVO 支持方法：self willChange...等，
+ *            但有几个问题：1、weak 对象在销毁时，无法得到通知
+ *                        2、struct 无法添加 KVO 语句（一加就直接崩溃，原因未知）
  *
  *
  */
