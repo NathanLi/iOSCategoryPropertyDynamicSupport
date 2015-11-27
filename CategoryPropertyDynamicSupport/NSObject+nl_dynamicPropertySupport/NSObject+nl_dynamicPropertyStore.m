@@ -61,6 +61,8 @@
       }
     }
     
+    free(properties);
+    
     if (self != [NSObject class]) {
       [descriptors addObjectsFromArray:[class_getSuperclass(self) nl_dynamicPropertyDescriptors]];
     }
