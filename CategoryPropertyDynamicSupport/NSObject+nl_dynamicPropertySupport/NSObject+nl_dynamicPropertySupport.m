@@ -30,7 +30,9 @@ return [[[self nl_dynamicPropertyDictionary] objectForKey:propertyName] typeName
 #define NLDefineDynamicIMPSetterBaseDataType(typeName, BaseType) \
 void NLDynamicIMPNameSetterBaseDataType(typeName)(id self, SEL _cmd, BaseType arg) {\
 NSString *propertyName = [[self class] nl_dynamicPropertyNameWithSelctor:_cmd];\
+[self willChangeValueForKey:propertyName];\
 [[self nl_dynamicPropertyDictionary] setObject:@(arg) forKey:propertyName];\
+[self didChangeValueForKey:propertyName];\
 }\
 
 #define NLDefineDynamicIMPBaseDataType(name, BaseType) \
@@ -63,8 +65,10 @@ return [[[self nl_dynamicPropertyDictionary] objectForKey:propertyName] typeName
 
 #define NLDefineDynamicIMPSetterStructType(typeName) \
 void NLDynamicIMPNameSetterStructType(typeName)(id self, SEL _cmd, typeName arg) {\
-NSString *propertyName = [[self class] nl_dynamicPropertyNameWithSelctor:_cmd];\
-[[self nl_dynamicPropertyDictionary] setObject:[NSValue valueWith##typeName:arg] forKey:propertyName];\
+  NSString *propertyName = [[self class] nl_dynamicPropertyNameWithSelctor:_cmd];\
+  [self willChangeValueForKey:propertyName];\
+  [[self nl_dynamicPropertyDictionary] setObject:[NSValue valueWith##typeName:arg] forKey:propertyName];\
+  [self didChangeValueForKey:propertyName];\
 }
 
 #define NLDefineDynamicIMPStructType(typeName) \
@@ -90,17 +94,23 @@ bool __NL__bool_dynamicGetterIMP(id self, SEL _cmd) {
 
 void __NL__object_dynamicSetterIMP(id self, SEL _cmd, id arg) {
   NSString *propertyName = [[self class] nl_dynamicPropertyNameWithSelctor:_cmd];
+  [self willChangeValueForKey:propertyName];
   [[self nl_dynamicPropertyDictionary] setObject:arg forKey:propertyName];
+  [self didChangeValueForKey:propertyName];
 }
 
 void __NL__object_dynamicSetterCopyIMP(id self, SEL _cmd, id arg) {
   NSString *propertyName = [[self class] nl_dynamicPropertyNameWithSelctor:_cmd];
+  [self willChangeValueForKey:propertyName];
   [[self nl_dynamicPropertyDictionary] setObject:[arg copy] forKey:propertyName];
+  [self didChangeValueForKey:propertyName];
 }
 
 void __NL__object_dynamicSetterWeakIMP(id self, SEL _cmd, id arg) {
   NSString *propertyName = [[self class] nl_dynamicPropertyNameWithSelctor:_cmd];
+  [self willChangeValueForKey:propertyName];
   [[self nl_dynamicPropertyWeakDictionary] setObject:arg forKey:propertyName];
+  [self didChangeValueForKey:propertyName];
 }
 
 id __NL__object_dynamicGetterIMP(id self, SEL _cmd) {
@@ -400,53 +410,59 @@ id __NL__object_dynamicGetterWeakIMP(id self, SEL _cmd) {
     return YES;
   }
   
+  NSString *typeEncoding = [desciptor typeEncoding];
+  if ([typeEncoding hasPrefix:@"T"]) {
+    typeEncoding = [typeEncoding substringFromIndex:1];
+  }
+  
+  const char *cFuncationTypes = [[typeEncoding stringByAppendingString:@"@:"] cStringUsingEncoding:NSUTF8StringEncoding];
   
   if ([desciptor isObjectType]) {
     if (desciptor.propertyPolicy == NLPropertyPolicyWeak) {
-      class_addMethod(self, selector, (IMP)__NL__object_dynamicGetterWeakIMP, "@@:");
+      class_addMethod(self, selector, (IMP)__NL__object_dynamicGetterWeakIMP, cFuncationTypes);
     } else {
-      class_addMethod(self, selector, (IMP)__NL__object_dynamicGetterIMP, "@@:");
+      class_addMethod(self, selector, (IMP)__NL__object_dynamicGetterIMP, cFuncationTypes);
     }
     return YES;
   }
   
   if ([desciptor isRectType]) {
-    class_addMethod(self, selector, (IMP)NLDynamicIMPNameGetterStructType(CGRect), "{@:");
+    class_addMethod(self, selector, (IMP)NLDynamicIMPNameGetterStructType(CGRect), cFuncationTypes);
     return YES;
   }
   
   if ([desciptor isPointType]) {
-    class_addMethod(self, selector, (IMP)NLDynamicIMPNameGetterStructType(CGPoint), "{@:");
+    class_addMethod(self, selector, (IMP)NLDynamicIMPNameGetterStructType(CGPoint), cFuncationTypes);
     return YES;
   }
   
   if ([desciptor isSizeType]) {
-    class_addMethod(self, selector, (IMP)NLDynamicIMPNameGetterStructType(CGSize), "{@:");
+    class_addMethod(self, selector, (IMP)NLDynamicIMPNameGetterStructType(CGSize), cFuncationTypes);
     return YES;
   }
   
   if ([desciptor isVectorType]) {
-    class_addMethod(self, selector, (IMP)NLDynamicIMPNameGetterStructType(CGVector), "{@:");
+    class_addMethod(self, selector, (IMP)NLDynamicIMPNameGetterStructType(CGVector), cFuncationTypes);
     return YES;
   }
   
   if ([desciptor isOffsetType]) {
-    class_addMethod(self, selector, (IMP)NLDynamicIMPNameGetterStructType(UIOffset), "{@:");
+    class_addMethod(self, selector, (IMP)NLDynamicIMPNameGetterStructType(UIOffset), cFuncationTypes);
     return YES;
   }
   
   if ([desciptor isEdgeInsetsType]) {
-    class_addMethod(self, selector, (IMP)NLDynamicIMPNameGetterStructType(UIEdgeInsets), "{@:");
+    class_addMethod(self, selector, (IMP)NLDynamicIMPNameGetterStructType(UIEdgeInsets), cFuncationTypes);
     return YES;
   }
   
   if ([desciptor isAffineTransormType]) {
-    class_addMethod(self, selector, (IMP)NLDynamicIMPNameGetterStructType(CGAffineTransform), "{@:");
+    class_addMethod(self, selector, (IMP)NLDynamicIMPNameGetterStructType(CGAffineTransform), cFuncationTypes);
     return YES;
   }
   
   if ([desciptor isTransorm3DType]) {
-    class_addMethod(self, selector, (IMP)NLDynamicIMPNameGetterStructType(CATransform3D), "{@:");
+    class_addMethod(self, selector, (IMP)NLDynamicIMPNameGetterStructType(CATransform3D), cFuncationTypes);
     return YES;
   }
   

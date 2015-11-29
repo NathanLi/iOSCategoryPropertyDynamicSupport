@@ -68,11 +68,45 @@
 
 @implementation ViewController
 
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
+  id value = [object valueForKeyPath:keyPath];
+  fprintf(stdout, "observe %s = %s\n", [keyPath cStringUsingEncoding:NSUTF8StringEncoding], [[value description] cStringUsingEncoding:NSUTF8StringEncoding]);
+}
+
+
 - (void)viewDidLoad {
   [super viewDidLoad];
   
-  // do not support KVO
-//  [self addObserver:self forKeyPath:@"nl_int" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_int" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_object" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_bool" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_char" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_float" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_double" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_long" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_uint" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_point" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_rect" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_size" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_vector" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_offset" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_edgeInsets" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_affineTransform" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_transform3D" options:NSKeyValueObservingOptionNew context:nil];
+  /**
+   *  @brief 注意，当观察动态生成的 weak 属性时，不会接收到 weak 自动设置为 nil 的通知（在 weak 指向的对象被
+   *         销毁时，weak 属性会自动设置为 nil）。
+   */
+  [self addObserver:self forKeyPath:@"nl_weakObject" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_copyBlock" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_coordinate" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_coordinateSpan" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_cmtime" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_cmtimeRange" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_scnvector3" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_scnvector4" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_matrix4" options:NSKeyValueObservingOptionNew context:nil];
+  
   
   self.subVC = [NLUIViewController new];
   self.subVC.nl_int = 30;
