@@ -33,16 +33,20 @@
     NSArray *attributes = [sPropertyAttributes componentsSeparatedByString:@","];
     [attributes enumerateObjectsUsingBlock:^(NSString *_Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
       if (idx == 0) {
+        // 第一个一定是类型编码
         _typeEncoding = [obj copy];
       }
       
       if ([obj hasPrefix:@"G"]) {
+        // getter 方法名
         NSString *getterName = [obj substringFromIndex:1];
         _getterName = [getterName copy];
       } else if ([obj hasPrefix:@"S"]) {
+        // setter 方法名
         NSString *setterName = [obj substringFromIndex:1];
         _setterName = [setterName copy];
       } else if ([obj hasPrefix:@"V"]) {
+        // 变量名
         NSString *variableName = [obj substringFromIndex:1];
         _variableName = [variableName copy];
       } else if ([obj isEqualToString:@"&"]) {

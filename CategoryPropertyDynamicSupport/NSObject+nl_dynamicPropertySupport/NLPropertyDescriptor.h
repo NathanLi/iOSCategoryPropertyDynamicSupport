@@ -49,14 +49,39 @@ typedef NS_ENUM(NSUInteger, NLPropertyPolicy) {
 
 @interface NLPropertyDescriptor : NSObject
 
+/**
+ *  @brief 属性名
+ */
 @property (nonatomic, copy, readonly) NSString *name;
+
+/**
+ *  @brief getter 方法名
+ */
 @property (nonatomic, copy, readonly) NSString *getterName;
+
+/**
+ *  @brief setter 方法名
+ */
 @property (nonatomic, copy, readonly) NSString *setterName;
+
+/**
+ *  @brief 变量名
+ */
 @property (nonatomic, copy, readonly) NSString *variableName;
+
+/**
+ *  @brief 属性类型编码
+ */
 @property (nonatomic, copy, readonly) NSString *typeEncoding;
 
+/**
+ *  @brief 属性类型
+ */
 @property (nonatomic, assign, readonly) NLPropertyPolicy propertyPolicy;
 
+/**
+ *  @brief 初始化
+ */
 - (instancetype)initWithObjcProperty:(objc_property_t)objcProperty;
 
 - (BOOL)isObjectType;
