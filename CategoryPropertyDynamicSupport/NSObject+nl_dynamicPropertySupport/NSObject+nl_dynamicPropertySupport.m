@@ -284,8 +284,8 @@ id __NL__object_dynamicGetterWeakIMP(id self, SEL _cmd) {
   }
   
   if ([desciptor.getterName isEqualToString:selName]) {
-    BOOL addedSetter = [self nl_addGetterMethodWithDescriptor:desciptor];
-    if (!addedSetter) {
+    BOOL addedGetter = [self nl_addGetterMethodWithDescriptor:desciptor];
+    if (!addedGetter) {
       return [self nl_missMethodWithPropertyDescriptor:desciptor selector:sel];
     }
     return YES;
