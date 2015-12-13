@@ -147,7 +147,7 @@ id __NL__object_dynamicGetterWeakIMP(id self, SEL _cmd) {
 
 #pragma mark - swizzle +resolveInstanceMethod and - setValue:forUndefinedKey:
 + (BOOL)nl_resolveInstanceMethod:(SEL)sel {
-  NSArray *propertyDescriptors = [self nl_dynamicPropertyDescriptors];
+  NSArray<NLPropertyDescriptor *> *propertyDescriptors = [self nl_dynamicPropertyDescriptors];
   for (NLPropertyDescriptor *propertyDescriptor in propertyDescriptors) {
     BOOL didAddMethod = [self nl_addMethodWithDescriptor:propertyDescriptor selector:sel];
     if (didAddMethod) {

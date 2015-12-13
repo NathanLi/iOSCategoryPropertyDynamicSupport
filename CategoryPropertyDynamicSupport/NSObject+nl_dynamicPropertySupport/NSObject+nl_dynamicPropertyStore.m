@@ -18,17 +18,21 @@
 
 + (BOOL)nl_validDynamicProperty:(objc_property_t)objProperty {
   const char *propertyAttributes = property_getAttributes(objProperty);
+  
+  // 必须是 @dynamic
   static char *const staticDynamicAttribute = ",D,";
   if (strstr(propertyAttributes, staticDynamicAttribute) == NULL) {
     return NO;
   }
   
+  // 名字得以 “nl_” 为前辍
   const char *propertyName = property_getName(objProperty);
   static char *const staticPropertyNamePrefix = "nl_";
   if (strstr(propertyName, staticPropertyNamePrefix) != propertyName) {
     return NO;
   }
   
+  // 不支持普通指针类型
   NSString *propertyAttributesString = [NSString stringWithCString:propertyAttributes encoding:NSUTF8StringEncoding];
   NSString *propertyEncoding = [propertyAttributesString substringToIndex:[propertyAttributesString rangeOfString:@","].location];
   if ([propertyEncoding hasPrefix:@"T*"]) {
@@ -52,6 +56,7 @@
     descriptors = [NSMutableArray arrayWithCapacity:outCount];
     objc_setAssociatedObject(self, _cmd, descriptors, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     
+    // 获取到本类所有的属性结构体，并转换为属性描述器
     objc_property_t *properties = class_copyPropertyList([self class], &outCount);
     for (index = 0; index < outCount; ++index) {
       objc_property_t property = properties[index];
@@ -64,6 +69,7 @@
     free(properties);
     
     if (self != [NSObject class]) {
+      // 加上父类的属性结构体
       [descriptors addObjectsFromArray:[class_getSuperclass(self) nl_dynamicPropertyDescriptors]];
     }
   }
