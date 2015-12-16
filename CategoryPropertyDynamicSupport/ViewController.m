@@ -57,13 +57,9 @@
 
 @interface ViewController ()
 
-@property (nonatomic, assign) int intB;
-@property (nonatomic, copy) UIView *viewString;
 @property (nonatomic, strong) id obj;
 
 @property (nonatomic, strong) NLUIViewController *subVC;
-
-@property id name;
 @end
 
 @implementation ViewController
