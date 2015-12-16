@@ -60,14 +60,14 @@
 		5A4C70601C21B47A00DDBFE5 /* NSObject+nl_dynamicPropertySupport */ = {
 			isa = PBXGroup;
 			children = (
+				5A4C70671C21B47A00DDBFE5 /* NSObject+nl_dynamicPropertySupport.h */,
+				5A4C70681C21B47A00DDBFE5 /* NSObject+nl_dynamicPropertySupport.m */,
 				5A4C70611C21B47A00DDBFE5 /* NLPropertyDescriptor.h */,
 				5A4C70621C21B47A00DDBFE5 /* NLPropertyDescriptor.m */,
 				5A4C70631C21B47A00DDBFE5 /* NSObject+nl_dynamicPropertyCustomeStruct.h */,
 				5A4C70641C21B47A00DDBFE5 /* NSObject+nl_dynamicPropertyCustomeStruct.m */,
 				5A4C70651C21B47A00DDBFE5 /* NSObject+nl_dynamicPropertyStore.h */,
 				5A4C70661C21B47A00DDBFE5 /* NSObject+nl_dynamicPropertyStore.m */,
-				5A4C70671C21B47A00DDBFE5 /* NSObject+nl_dynamicPropertySupport.h */,
-				5A4C70681C21B47A00DDBFE5 /* NSObject+nl_dynamicPropertySupport.m */,
 			);
 			path = "NSObject+nl_dynamicPropertySupport";
 			sourceTree = "<group>";
