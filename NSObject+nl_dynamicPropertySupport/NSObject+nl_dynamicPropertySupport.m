@@ -164,7 +164,16 @@ id __NL__object_dynamicGetterWeakIMP(id self, SEL _cmd) {
  *       所以在系统要调用 -setValue:forKey: 时，手动调用咱们的 setter 方法
  */
 - (void)nl_setValue:(id)value forKey:(NSString *)key {
-  if (![key hasPrefix:@"nl_"]) {
+  // 名字得以 staticPropertyNamePrefix 为前辍
+  static const char *staticPropertyNamePrefix = NULL;
+  
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    staticPropertyNamePrefix = nl_dynamicPropertyPrefix();
+  });
+  
+  if (staticPropertyNamePrefix == NULL ||
+      ![key hasPrefix:[NSString stringWithCString:staticPropertyNamePrefix encoding:NSUTF8StringEncoding]]) {
     [self nl_setValue:value forKey:key];
     return;
   }
@@ -478,3 +487,17 @@ id __NL__object_dynamicGetterWeakIMP(id self, SEL _cmd) {
 }
 
 @end
+
+#define kNLDynamicPropertyPrefixDefaultValue "nl_"
+
+static const char *kNLDynamicPropertyPrefix = kNLDynamicPropertyPrefixDefaultValue;
+void nl_dynamicPropertySetPrefix(const char *prefix) {
+  if (kNLDynamicPropertyPrefix == kNLDynamicPropertyPrefixDefaultValue) {
+    kNLDynamicPropertyPrefix = prefix;
+  }
+}
+
+const char *nl_dynamicPropertyPrefix() {
+  return kNLDynamicPropertyPrefix;
+}
+

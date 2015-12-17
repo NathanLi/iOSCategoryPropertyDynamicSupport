@@ -14,14 +14,14 @@
 /*
  iOS Class Category property dynamic support
  
- 动态给分类的以 `nl_` 开头命名的属性添加相应的 `getter`、`setter` 方法</br>
+ 在运行时自动给分类的动态属性添加相应的 `getter`、`setter` 方法</br>
  在分类中添加一些自定义的属性的场景还是蛮多的。一般的方法是自定义其 `getter`、`setter` 方法，在这些方法
  里面再用关联对象等手段来实现。虽然不难，却也麻烦且重复。
  本类的目的在于解放这些重复的劳动。
  
  　使用：
  　　1、导入本类及相关类（NSObject+nl_dynamicPropertySupport目录下）
- 　　2、在分类中定义属性时，要以 `nl_` 开头
+ 　　2、在分类中定义属性时，默认要以 `nl_` 开头
  　　3、在分类的实现体中，给属性加上 @dynamic
  
  　优点：
@@ -61,7 +61,22 @@
  
  @end
  ```
-
+ 
+ ## 自定义属性前辍
+  　可以在 `main` 方法中调用 C 函数 `nl_dynamicPropertySetPrefix` 设置前辍。
+ ```
+ int main(int argc, char * argv[]) {
+   @autoreleasepool {
+     nl_dynamicPropertySetPrefix("af_");
+     return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
+   }
+ }
+ ```
+ 
+  　虽然可以设置前辍为 NULL 或 ""，但不建议这么设置。因为可能会有效率影响；CoreData 自定义的模型也是动态属性，可能会有 bug；
+ 
+ 
+  　如果你有好的 idea，请随时提 issue 或 request。
  */
 @interface NSObject (nl_dynamicPropertySupport)
 
@@ -74,6 +89,32 @@
  *
  *  @return 如果你能在这个方法里加载所需要的方法，在 class_addMethod... 加载了所需方法后返回 YES; 否则返回NO；
  */
-+ (BOOL)nl_missMethodWithPropertyDescriptor:(NLPropertyDescriptor *)descriptor selector:(SEL)sel;
++ (BOOL)nl_missMethodWithPropertyDescriptor:(NLPropertyDescriptor * _Nonnull)descriptor selector:(SEL _Nonnull)sel;
 
 @end
+
+/**
+ *  @brief 设置动态属性的前辍名
+ *         注意，只有在 main.m 文件中先调用本方法才有效；只有能设置一次，多次赋值会被忽略
+ *         可以为 NULL 和 ""，但不建议这么设置
+ *
+```
+int main(int argc, char * argv[]) {
+  @autoreleasepool {
+    nl_dynamicPropertySetPrefix("af_");
+    return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
+ }
+}
+```
+ *
+ *  @param prefix 前辍字符串
+ */
+extern void nl_dynamicPropertySetPrefix(const char * _Nullable prefix);
+
+/**
+ *  @brief 动态属性前辍名
+ *
+ *  @return 前辍字符串
+ */
+extern const char * _Nullable nl_dynamicPropertyPrefix();
+

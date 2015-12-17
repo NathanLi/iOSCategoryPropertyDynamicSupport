@@ -13,6 +13,7 @@
 #endif
 
 #import "NSObject+nl_dynamicPropertyStore.h"
+#import "NSObject+nl_dynamicPropertySupport.h"
 
 @implementation NSObject (nl_dynamicPropertyStore)
 
@@ -25,10 +26,16 @@
     return NO;
   }
   
-  // 名字得以 “nl_” 为前辍
+  // 名字得以 staticPropertyNamePrefix 为前辍
+  static const char *staticPropertyNamePrefix = NULL;
+  
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    staticPropertyNamePrefix = nl_dynamicPropertyPrefix();
+  });
+  
   const char *propertyName = property_getName(objProperty);
-  static char *const staticPropertyNamePrefix = "nl_";
-  if (strstr(propertyName, staticPropertyNamePrefix) != propertyName) {
+  if (staticPropertyNamePrefix != NULL && strstr(propertyName, staticPropertyNamePrefix) != propertyName) {
     return NO;
   }
   
