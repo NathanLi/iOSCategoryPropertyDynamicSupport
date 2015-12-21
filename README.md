@@ -60,7 +60,7 @@ iOS Class Category property dynamic support
  }
  ```
  
-  　虽然可以设置前辍为 NULL 或 ""，但不建议这么设置。因为可能会有效率影响；CoreData 自定义的模型也是动态属性，可能会有 bug；  
+  　虽然可以设置前辍为 NULL 或 ""，但不建议这么设置。因为可能会有效率影响；CoreData 自定义的模型也是动态属性，如果属性长度为0的话且用了 CoreData 的话，可能会有 bug；  
  
  
   　如果你有好的 idea 或 疑问，请随时提 issue 或 request。  
