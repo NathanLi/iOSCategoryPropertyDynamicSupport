@@ -24,13 +24,13 @@ iOS Class Category property dynamic support
  　　2、注意：KVO 支持不完美。  
  　　　当观察动态生成的 weak 属性时，不会接收到 weak 自动设置为 nil 的通知（在 weak 指向的对象被销毁时，weak 属性会自动设置为 nil）。  
  
- ##工作原理：
+##工作原理：
  　　1、使用 `Associated Objects`  
  　　2、OC runtime  
  　　3、Type Encoding  
  　　详见：http://nathanli.cn/2015/12/14/objective-c-%E5%85%83%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5-%E5%88%86%E7%B1%BB%E5%8A%A8%E6%80%81%E5%B1%9E%E6%80%A7/  
  　　
- ##代码使用：
+##代码使用：
  头文件 .h：  
  ```Objective-C
  @interface YourClass (YourCategory)
@@ -49,7 +49,7 @@ iOS Class Category property dynamic support
  @end
  ```
  
- ##自定义属性前辍  
+##自定义属性前辍  
   　可以在 `main` 方法中调用 C 函数 `nl_dynamicPropertySetPrefix` 设置前辍。  
  ```C
  int main(int argc, char * argv[]) {
@@ -65,5 +65,5 @@ iOS Class Category property dynamic support
  
   　如果你有好的 idea 或 疑问，请随时提 issue 或 request。 
  
- ##License
- Released under the MIT-license
+##License
+Released under the MIT-license
