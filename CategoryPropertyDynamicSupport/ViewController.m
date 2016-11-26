@@ -53,6 +53,8 @@
 @property (nonatomic, copy) void (^nl_copyBlock)(void);
 @property (nonatomic, weak) id nl_weakObject;
 
+@property (nonatomic, strong) id nl_strongObject;
+
 @end
 
 @interface ViewController ()
@@ -102,6 +104,7 @@
   [self addObserver:self forKeyPath:@"nl_scnvector3" options:NSKeyValueObservingOptionNew context:nil];
   [self addObserver:self forKeyPath:@"nl_scnvector4" options:NSKeyValueObservingOptionNew context:nil];
   [self addObserver:self forKeyPath:@"nl_matrix4" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"nl_strongObject" options:NSKeyValueObservingOptionNew context:nil];
   
   
   self.subVC = [NLUIViewController new];
@@ -135,6 +138,7 @@
   UIButton *tempButton = [UIButton new];
   self.obj = tempButton;
   self.nl_weakObject = self.obj;
+  self.nl_strongObject = [NSObject new];
   self.nl_copyBlock = ^{
     fprintf(stdout, "nl_object: just printf call copy block\n");
   };
@@ -207,6 +211,13 @@
   fprintf(stdout, "nl_scnvector3 = {%f, %f, %f}\n", self.nl_scnvector3.x, self.nl_scnvector3.y, self.nl_scnvector3.z);
   fprintf(stdout, "nl_scnvector4 = {%f, %f, %f, %f}\n", self.nl_scnvector4.x, self.nl_scnvector4.y, self.nl_scnvector4.z, self.nl_scnvector4.w);
   fprintf(stdout, "nl_matrix4 is equal SCNMatrix4MakeScale(1.0, 1.0, 1.0) = %s\n", SCNMatrix4EqualToMatrix4(self.nl_matrix4, SCNMatrix4MakeScale(1.0, 1.0, 1.0)) ? "YES" : "NO");
+  
+  fprintf(stdout, "nl_strongObject = {%s}\n", [[self.nl_strongObject description] cStringUsingEncoding:NSUTF8StringEncoding]);
+  
+  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    self.nl_strongObject = nil;
+    self.nl_weakObject = nil;
+  });
 }
 
 @end
@@ -242,6 +253,7 @@
 
 @dynamic nl_copyBlock;
 @dynamic nl_weakObject;
+@dynamic nl_strongObject;
 
 @dynamic nl_matrix4;
 @dynamic nl_scnvector4;

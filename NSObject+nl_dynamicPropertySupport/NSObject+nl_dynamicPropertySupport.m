@@ -94,8 +94,13 @@ bool __NL__bool_dynamicGetterIMP(id self, SEL _cmd) {
 
 void __NL__object_dynamicSetterIMP(id self, SEL _cmd, id arg) {
   NSString *propertyName = [[self class] nl_dynamicPropertyNameWithSelctor:_cmd];
+  
   [self willChangeValueForKey:propertyName];
-  [[self nl_dynamicPropertyDictionary] setObject:arg forKey:propertyName];
+  if (arg) {
+    [[self nl_dynamicPropertyDictionary] setObject:arg forKey:propertyName];
+  } else {
+    [[self nl_dynamicPropertyDictionary] removeObjectForKey:propertyName];
+  }
   [self didChangeValueForKey:propertyName];
 }
 
