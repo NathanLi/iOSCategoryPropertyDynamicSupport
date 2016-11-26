@@ -18,19 +18,19 @@ iOS Class Category property dynamic support
  　　4、支持 KVO  
  　　5、支持 strong、copy、weak  
  
- 　不足：  
- 　　1、不支持自定义的结构体。  
+ 　不足：   
+ 　　1、不支持自定义的结构体。   
  　　　但可以通过 `+ nl_missMethodWithPropertyDescriptor:selector:` 来实现。实现方法可见：（`nl_dynamicPropertyCustomeStruct`分类）  
  　　2、注意：KVO 支持不完美。  
  　　　当观察动态生成的 weak 属性时，不会接收到 weak 自动设置为 nil 的通知（在 weak 指向的对象被销毁时，weak 属性会自动设置为 nil）。  
  
- ## 工作原理：
+##工作原理：
  　　1、使用 `Associated Objects`  
  　　2、OC runtime  
  　　3、Type Encoding  
  　　详见：http://nathanli.cn/2015/12/14/objective-c-%E5%85%83%E7%BC%96%E7%A8%8B%E5%AE%9E%E8%B7%B5-%E5%88%86%E7%B1%BB%E5%8A%A8%E6%80%81%E5%B1%9E%E6%80%A7/  
  　　
- ## 代码使用：
+##代码使用：
  头文件 .h：  
  ```Objective-C
  @interface YourClass (YourCategory)
@@ -49,9 +49,9 @@ iOS Class Category property dynamic support
  @end
  ```
  
- ## 自定义属性前辍  
+##自定义属性前辍  
   　可以在 `main` 方法中调用 C 函数 `nl_dynamicPropertySetPrefix` 设置前辍。  
- ```
+ ```C
  int main(int argc, char * argv[]) {
    @autoreleasepool {
      nl_dynamicPropertySetPrefix("af_");
@@ -60,7 +60,10 @@ iOS Class Category property dynamic support
  }
  ```
  
-  　虽然可以设置前辍为 NULL 或 ""，但不建议这么设置。因为可能会有效率影响；CoreData 自定义的模型也是动态属性，可能会有 bug；  
+  　虽然可以设置前辍为 NULL 或 ""，但不建议这么设置。因为可能会有效率影响；CoreData 自定义的模型也是动态属性，如果属性长度为0的话且用了 CoreData 的话，可能会有 bug；  
  
  
-  　如果你有好的 idea，请随时提 issue 或 request。  
+  　如果你有好的 idea 或 疑问，请随时提 issue 或 request。 
+ 
+##License
+Released under the MIT-license
