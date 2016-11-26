@@ -122,42 +122,40 @@
 }
 
 - (BOOL)isRectType {
-  NSString *encodeString = [NSString stringWithCString:@encode(CGRect) encoding:NSUTF8StringEncoding];
-  return [self.typeEncoding isEqualToString:[@"T" stringByAppendingString:encodeString]];
+  return [self _isStructTypeWithEncode:@encode(CGRect)];
 }
 
 - (BOOL)isPointType {
-  NSString *encodeString = [NSString stringWithCString:@encode(CGPoint) encoding:NSUTF8StringEncoding];
-  return [self.typeEncoding isEqualToString:[@"T" stringByAppendingString:encodeString]];
+  return [self _isStructTypeWithEncode:@encode(CGPoint)];
 }
 
 - (BOOL)isSizeType {
-  NSString *encodeString = [NSString stringWithCString:@encode(CGSize) encoding:NSUTF8StringEncoding];
-  return [self.typeEncoding isEqualToString:[@"T" stringByAppendingString:encodeString]];
+  return [self _isStructTypeWithEncode:@encode(CGSize)];
 }
 
 - (BOOL)isVectorType {
-  NSString *encodeString = [NSString stringWithCString:@encode(CGVector) encoding:NSUTF8StringEncoding];
-  return [self.typeEncoding isEqualToString:[@"T" stringByAppendingString:encodeString]];
+  return [self _isStructTypeWithEncode:@encode(CGVector)];
 }
 
 - (BOOL)isOffsetType {
-  NSString *encodeString = [NSString stringWithCString:@encode(UIOffset) encoding:NSUTF8StringEncoding];
-  return [self.typeEncoding isEqualToString:[@"T" stringByAppendingString:encodeString]];
+  return [self _isStructTypeWithEncode:@encode(UIOffset)];
 }
 
 - (BOOL)isEdgeInsetsType {
-  NSString *encodeString = [NSString stringWithCString:@encode(UIEdgeInsets) encoding:NSUTF8StringEncoding];
-  return [self.typeEncoding isEqualToString:[@"T" stringByAppendingString:encodeString]];
+  return [self _isStructTypeWithEncode:@encode(UIEdgeInsets)];
 }
 
 - (BOOL)isAffineTransormType {
-  NSString *encodeString = [NSString stringWithCString:@encode(CGAffineTransform) encoding:NSUTF8StringEncoding];
-  return [self.typeEncoding isEqualToString:[@"T" stringByAppendingString:encodeString]];
+  return [self _isStructTypeWithEncode:@encode(CGAffineTransform)];
 }
 
 - (BOOL)isTransorm3DType {
-  NSString *encodeString = [NSString stringWithCString:@encode(CATransform3D) encoding:NSUTF8StringEncoding];
+  return [self _isStructTypeWithEncode:@encode(CATransform3D)];
+}
+
+- (BOOL)_isStructTypeWithEncode:(const char *)structEncode {
+  NSParameterAssert(structEncode != NULL);
+  NSString *encodeString = [NSString stringWithCString:structEncode encoding:NSUTF8StringEncoding];
   return [self.typeEncoding isEqualToString:[@"T" stringByAppendingString:encodeString]];
 }
 
