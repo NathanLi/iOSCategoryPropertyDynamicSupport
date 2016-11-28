@@ -13,47 +13,52 @@
 @import CoreMedia;
 #import <MapKit/MKGeometry.h>
 #import <CoreMedia/CMTimeRange.h>
+#import "NLDynamicPropertyPrefix.h"
+
+DynamicPropertySetPrefix("demo_");
+
+
 
 @interface NLUIViewController : ViewController
 
 @end
 
-@interface ViewController (nl_ex)
+@interface ViewController (demo_ex)
 
-@property (nonatomic, assign) int nl_int;
-@property (nonatomic, strong) id nl_object;
-@property (nonatomic, assign) BOOL nl_bool;
-@property (nonatomic, assign) char nl_char;
-@property (nonatomic, assign) float nl_float;
-@property (nonatomic, assign) double nl_double;
-@property (nonatomic, assign) long nl_long;
-@property (nonatomic, assign) uint nl_uint;
+@property (nonatomic, assign) int demo_int;
+@property (nonatomic, strong) id demo_object;
+@property (nonatomic, assign) BOOL demo_bool;
+@property (nonatomic, assign) char demo_char;
+@property (nonatomic, assign) float demo_float;
+@property (nonatomic, assign) double demo_double;
+@property (nonatomic, assign) long demo_long;
+@property (nonatomic, assign) uint demo_uint;
 
-@property (nonatomic, assign) CGRect nl_rect;
-@property (nonatomic, assign) CGPoint nl_point;
-@property (nonatomic, assign) CGSize nl_size;
-@property (nonatomic, assign) CGVector nl_vector;
-@property (nonatomic, assign) CGAffineTransform nl_affineTransform;
-@property (nonatomic, assign) UIEdgeInsets nl_edgeInsets;
-@property (nonatomic, assign) UIOffset nl_offset;
-@property (nonatomic, assign) CATransform3D nl_transform3D;
+@property (nonatomic, assign) CGRect demo_rect;
+@property (nonatomic, assign) CGPoint demo_point;
+@property (nonatomic, assign) CGSize demo_size;
+@property (nonatomic, assign) CGVector demo_vector;
+@property (nonatomic, assign) CGAffineTransform demo_affineTransform;
+@property (nonatomic, assign) UIEdgeInsets demo_edgeInsets;
+@property (nonatomic, assign) UIOffset demo_offset;
+@property (nonatomic, assign) CATransform3D demo_transform3D;
 
 
-@property (nonatomic, assign) CMTime nl_cmtime;
-@property (nonatomic, assign) CMTimeRange nl_cmtimeRange;
-@property (nonatomic, assign) CMTimeMapping nl_cmtimeMapping;
+@property (nonatomic, assign) CMTime demo_cmtime;
+@property (nonatomic, assign) CMTimeRange demo_cmtimeRange;
+@property (nonatomic, assign) CMTimeMapping demo_cmtimeMapping;
 
-@property (nonatomic, assign) CLLocationCoordinate2D nl_coordinate;
-@property (nonatomic, assign) MKCoordinateSpan nl_coordinateSpan;
+@property (nonatomic, assign) CLLocationCoordinate2D demo_coordinate;
+@property (nonatomic, assign) MKCoordinateSpan demo_coordinateSpan;
 
-@property (nonatomic, assign) SCNVector3 nl_scnvector3;
-@property (nonatomic, assign) SCNVector4 nl_scnvector4;
-@property (nonatomic, assign) SCNMatrix4 nl_matrix4;
+@property (nonatomic, assign) SCNVector3 demo_scnvector3;
+@property (nonatomic, assign) SCNVector4 demo_scnvector4;
+@property (nonatomic, assign) SCNMatrix4 demo_matrix4;
 
-@property (nonatomic, copy) void (^nl_copyBlock)(void);
-@property (nonatomic, weak) id nl_weakObject;
+@property (nonatomic, copy) void (^demo_copyBlock)(void);
+@property (nonatomic, weak) id demo_weakObject;
 
-@property (nonatomic, strong) id nl_strongObject;
+@property (nonatomic, strong) id demo_strongObject;
 
 @end
 
@@ -75,89 +80,89 @@
 - (void)viewDidLoad {
   [super viewDidLoad];
   
-  [self addObserver:self forKeyPath:@"nl_int" options:NSKeyValueObservingOptionNew context:nil];
-  [self addObserver:self forKeyPath:@"nl_object" options:NSKeyValueObservingOptionNew context:nil];
-  [self addObserver:self forKeyPath:@"nl_bool" options:NSKeyValueObservingOptionNew context:nil];
-  [self addObserver:self forKeyPath:@"nl_char" options:NSKeyValueObservingOptionNew context:nil];
-  [self addObserver:self forKeyPath:@"nl_float" options:NSKeyValueObservingOptionNew context:nil];
-  [self addObserver:self forKeyPath:@"nl_double" options:NSKeyValueObservingOptionNew context:nil];
-  [self addObserver:self forKeyPath:@"nl_long" options:NSKeyValueObservingOptionNew context:nil];
-  [self addObserver:self forKeyPath:@"nl_uint" options:NSKeyValueObservingOptionNew context:nil];
-  [self addObserver:self forKeyPath:@"nl_point" options:NSKeyValueObservingOptionNew context:nil];
-  [self addObserver:self forKeyPath:@"nl_rect" options:NSKeyValueObservingOptionNew context:nil];
-  [self addObserver:self forKeyPath:@"nl_size" options:NSKeyValueObservingOptionNew context:nil];
-  [self addObserver:self forKeyPath:@"nl_vector" options:NSKeyValueObservingOptionNew context:nil];
-  [self addObserver:self forKeyPath:@"nl_offset" options:NSKeyValueObservingOptionNew context:nil];
-  [self addObserver:self forKeyPath:@"nl_edgeInsets" options:NSKeyValueObservingOptionNew context:nil];
-  [self addObserver:self forKeyPath:@"nl_affineTransform" options:NSKeyValueObservingOptionNew context:nil];
-  [self addObserver:self forKeyPath:@"nl_transform3D" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"demo_int" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"demo_object" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"demo_bool" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"demo_char" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"demo_float" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"demo_double" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"demo_long" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"demo_uint" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"demo_point" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"demo_rect" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"demo_size" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"demo_vector" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"demo_offset" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"demo_edgeInsets" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"demo_affineTransform" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"demo_transform3D" options:NSKeyValueObservingOptionNew context:nil];
   /**
    *  @brief 注意，当观察动态生成的 weak 属性时，不会接收到 weak 自动设置为 nil 的通知（在 weak 指向的对象被
    *         销毁时，weak 属性会自动设置为 nil）。
    */
-  [self addObserver:self forKeyPath:@"nl_weakObject" options:NSKeyValueObservingOptionNew context:nil];
-  [self addObserver:self forKeyPath:@"nl_copyBlock" options:NSKeyValueObservingOptionNew context:nil];
-  [self addObserver:self forKeyPath:@"nl_coordinate" options:NSKeyValueObservingOptionNew context:nil];
-  [self addObserver:self forKeyPath:@"nl_coordinateSpan" options:NSKeyValueObservingOptionNew context:nil];
-  [self addObserver:self forKeyPath:@"nl_cmtime" options:NSKeyValueObservingOptionNew context:nil];
-  [self addObserver:self forKeyPath:@"nl_cmtimeRange" options:NSKeyValueObservingOptionNew context:nil];
-  [self addObserver:self forKeyPath:@"nl_scnvector3" options:NSKeyValueObservingOptionNew context:nil];
-  [self addObserver:self forKeyPath:@"nl_scnvector4" options:NSKeyValueObservingOptionNew context:nil];
-  [self addObserver:self forKeyPath:@"nl_matrix4" options:NSKeyValueObservingOptionNew context:nil];
-  [self addObserver:self forKeyPath:@"nl_strongObject" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"demo_weakObject" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"demo_copyBlock" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"demo_coordinate" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"demo_coordinateSpan" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"demo_cmtime" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"demo_cmtimeRange" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"demo_scnvector3" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"demo_scnvector4" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"demo_matrix4" options:NSKeyValueObservingOptionNew context:nil];
+  [self addObserver:self forKeyPath:@"demo_strongObject" options:NSKeyValueObservingOptionNew context:nil];
   
   
   self.subVC = [NLUIViewController new];
-  self.subVC.nl_int = 30;
-  self.subVC.nl_object = [UIView new];
-  [self setValue:@40 forKeyPath:@"subVC.nl_int"];
+  self.subVC.demo_int = 30;
+  self.subVC.demo_object = [UIView new];
+  [self setValue:@40 forKeyPath:@"subVC.demo_int"];
   
-  self.nl_int = 20;
-  self.nl_object = [UIView new];
-  [self setValue:@34 forKey:@"nl_int"];
-  [self setValue:@"new nl_object string" forKey:@"nl_object"];
+  self.demo_int = 20;
+  self.demo_object = [UIView new];
+  [self setValue:@34 forKey:@"demo_int"];
+  [self setValue:@"new demo_object string" forKey:@"demo_object"];
   
-  self.nl_bool = YES;
-  self.nl_char = 'c';
-  self.nl_float = 32.2;
-  self.nl_double = 51351654411243.3;
-  self.nl_long = 31124L;
-  self.nl_uint = 24;
+  self.demo_bool = YES;
+  self.demo_char = 'c';
+  self.demo_float = 32.2;
+  self.demo_double = 51351654411243.3;
+  self.demo_long = 31124L;
+  self.demo_uint = 24;
   
-  self.nl_rect = CGRectMake(10, 10, 100, 100);
-  [self setValue:[NSValue valueWithCGRect:CGRectMake(0, 0, 200, 200)] forKey:@"nl_rect"];
+  self.demo_rect = CGRectMake(10, 10, 100, 100);
+  [self setValue:[NSValue valueWithCGRect:CGRectMake(0, 0, 200, 200)] forKey:@"demo_rect"];
   
-  self.nl_point = CGPointMake(10, 10);
-  self.nl_size = CGSizeMake(100, 100);
-  self.nl_vector = CGVectorMake(20.0, 20.0);
-  self.nl_offset = UIOffsetMake(10.0, 20.0);
-  self.nl_edgeInsets = UIEdgeInsetsMake(10, 20, 30, 40);
-  self.nl_affineTransform = CGAffineTransformMake(1.0, 2.0, 3.0, 4.0, 5.0, 6.0);
-  self.nl_transform3D = CATransform3DMakeRotation(90, 1, 1, 1);
+  self.demo_point = CGPointMake(10, 10);
+  self.demo_size = CGSizeMake(100, 100);
+  self.demo_vector = CGVectorMake(20.0, 20.0);
+  self.demo_offset = UIOffsetMake(10.0, 20.0);
+  self.demo_edgeInsets = UIEdgeInsetsMake(10, 20, 30, 40);
+  self.demo_affineTransform = CGAffineTransformMake(1.0, 2.0, 3.0, 4.0, 5.0, 6.0);
+  self.demo_transform3D = CATransform3DMakeRotation(90, 1, 1, 1);
   
   UIButton *tempButton = [UIButton new];
   self.obj = tempButton;
-  self.nl_weakObject = self.obj;
-  self.nl_strongObject = [NSObject new];
-  self.nl_copyBlock = ^{
-    fprintf(stdout, "nl_object: just printf call copy block\n");
+  self.demo_weakObject = self.obj;
+  self.demo_strongObject = [NSObject new];
+  self.demo_copyBlock = ^{
+    fprintf(stdout, "demo_object: just printf call copy block\n");
   };
   
-  self.nl_coordinate = CLLocationCoordinate2DMake(21.016f, 135.05135f);
-  self.nl_coordinateSpan = MKCoordinateSpanMake(32.51f, 145.6156f);
+  self.demo_coordinate = CLLocationCoordinate2DMake(21.016f, 135.05135f);
+  self.demo_coordinateSpan = MKCoordinateSpanMake(32.51f, 145.6156f);
   // KVC
-  [self setValue:[NSValue valueWithMKCoordinate:CLLocationCoordinate2DMake(32.051f, 154.053f)] forKey:@"nl_coordinate"];
+  [self setValue:[NSValue valueWithMKCoordinate:CLLocationCoordinate2DMake(32.051f, 154.053f)] forKey:@"demo_coordinate"];
   
-  self.nl_cmtime = CMTimeMake(1000, 24);
-  self.nl_cmtimeRange = CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithEpoch(2400, 24, 0));
+  self.demo_cmtime = CMTimeMake(1000, 24);
+  self.demo_cmtimeRange = CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithEpoch(2400, 24, 0));
   
   CMTimeRange timeRangeTarget = CMTimeRangeMake(kCMTimeZero, CMTimeMakeWithEpoch(3600, 12, 0));
-  CMTimeMapping timeMapping = {self.nl_cmtimeRange, timeRangeTarget};
-  self.nl_cmtimeMapping = timeMapping;
+  CMTimeMapping timeMapping = {self.demo_cmtimeRange, timeRangeTarget};
+  self.demo_cmtimeMapping = timeMapping;
   
-  self.nl_scnvector3 = SCNVector3Make(1.f, 2.f, 3.f);
-  self.nl_scnvector4 = SCNVector4Make(4.f, 6.f, 8.f, 10.f);
-  self.nl_matrix4 = SCNMatrix4MakeScale(1.0, 1.0, 1.0);
+  self.demo_scnvector3 = SCNVector3Make(1.f, 2.f, 3.f);
+  self.demo_scnvector4 = SCNVector4Make(4.f, 6.f, 8.f, 10.f);
+  self.demo_matrix4 = SCNMatrix4MakeScale(1.0, 1.0, 1.0);
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -169,54 +174,54 @@
 - (void)viewDidAppear:(BOOL)animated {
   [super viewDidAppear:animated];
   
-  fprintf(stdout, "\nsub class nl_int = %d\n", self.subVC.nl_int);
-  fprintf(stdout, "sub class nl_object = %s\n\n", [[self.subVC.nl_object description] cStringUsingEncoding:NSUTF8StringEncoding]);
+  fprintf(stdout, "\nsub class demo_int = %d\n", self.subVC.demo_int);
+  fprintf(stdout, "sub class demo_object = %s\n\n", [[self.subVC.demo_object description] cStringUsingEncoding:NSUTF8StringEncoding]);
   
-  fprintf(stdout, "nl_int = %d\n", self.nl_int);
-  fprintf(stdout, "nl_object = %s\n", [[self.nl_object description] cStringUsingEncoding:NSUTF8StringEncoding]);
-  fprintf(stdout, "nl_bool = %d\n", self.nl_bool);
-  fprintf(stdout, "nl_char = %c\n", self.nl_char);
-  fprintf(stdout, "nl_float = %f\n", self.nl_float);
-  fprintf(stdout, "nl_double = %f\n", self.nl_double);
-  fprintf(stdout, "nl_long = %ld\n", self.nl_long);
-  fprintf(stdout, "nl_uint = %d\n", self.nl_uint);
+  fprintf(stdout, "demo_int = %d\n", self.demo_int);
+  fprintf(stdout, "demo_object = %s\n", [[self.demo_object description] cStringUsingEncoding:NSUTF8StringEncoding]);
+  fprintf(stdout, "demo_bool = %d\n", self.demo_bool);
+  fprintf(stdout, "demo_char = %c\n", self.demo_char);
+  fprintf(stdout, "demo_float = %f\n", self.demo_float);
+  fprintf(stdout, "demo_double = %f\n", self.demo_double);
+  fprintf(stdout, "demo_long = %ld\n", self.demo_long);
+  fprintf(stdout, "demo_uint = %d\n", self.demo_uint);
   
-  fprintf(stdout, "nl_rect = %s\n", [NSStringFromCGRect(self.nl_rect) cStringUsingEncoding:NSUTF8StringEncoding]);
-  fprintf(stdout, "nl_point = %s\n", [NSStringFromCGPoint(self.nl_point) cStringUsingEncoding:NSUTF8StringEncoding]);
-  fprintf(stdout, "nl_size = %s\n", [NSStringFromCGSize(self.nl_size) cStringUsingEncoding:NSUTF8StringEncoding]);
-  fprintf(stdout, "nl_vector = %s\n", [NSStringFromCGVector(self.nl_vector) cStringUsingEncoding:NSUTF8StringEncoding]);
-  fprintf(stdout, "nl_offset = %s\n", [NSStringFromUIOffset(self.nl_offset) cStringUsingEncoding:NSUTF8StringEncoding]);
-  fprintf(stdout, "nl_edgeInsets = %s\n", [NSStringFromUIEdgeInsets(self.nl_edgeInsets) cStringUsingEncoding:NSUTF8StringEncoding]);
-  fprintf(stdout, "nl_affineTransform = %s\n", [NSStringFromCGAffineTransform(self.nl_affineTransform) cStringUsingEncoding:NSUTF8StringEncoding]);
-  fprintf(stdout, "nl_transform3D is equal CATransform3DMakeRotation(90, 1, 1, 1) = %s\n", CATransform3DEqualToTransform(self.nl_transform3D, CATransform3DMakeRotation(90, 1, 1, 1)) ? "YES" : "NO");
+  fprintf(stdout, "demo_rect = %s\n", [NSStringFromCGRect(self.demo_rect) cStringUsingEncoding:NSUTF8StringEncoding]);
+  fprintf(stdout, "demo_point = %s\n", [NSStringFromCGPoint(self.demo_point) cStringUsingEncoding:NSUTF8StringEncoding]);
+  fprintf(stdout, "demo_size = %s\n", [NSStringFromCGSize(self.demo_size) cStringUsingEncoding:NSUTF8StringEncoding]);
+  fprintf(stdout, "demo_vector = %s\n", [NSStringFromCGVector(self.demo_vector) cStringUsingEncoding:NSUTF8StringEncoding]);
+  fprintf(stdout, "demo_offset = %s\n", [NSStringFromUIOffset(self.demo_offset) cStringUsingEncoding:NSUTF8StringEncoding]);
+  fprintf(stdout, "demo_edgeInsets = %s\n", [NSStringFromUIEdgeInsets(self.demo_edgeInsets) cStringUsingEncoding:NSUTF8StringEncoding]);
+  fprintf(stdout, "demo_affineTransform = %s\n", [NSStringFromCGAffineTransform(self.demo_affineTransform) cStringUsingEncoding:NSUTF8StringEncoding]);
+  fprintf(stdout, "demo_transform3D is equal CATransform3DMakeRotation(90, 1, 1, 1) = %s\n", CATransform3DEqualToTransform(self.demo_transform3D, CATransform3DMakeRotation(90, 1, 1, 1)) ? "YES" : "NO");
   
-  fprintf(stdout, "nl_weakObject = %s\n", [[self.nl_weakObject description] cStringUsingEncoding:NSUTF8StringEncoding]);
+  fprintf(stdout, "demo_weakObject = %s\n", [[self.demo_weakObject description] cStringUsingEncoding:NSUTF8StringEncoding]);
   
   
-  self.nl_copyBlock();
+  self.demo_copyBlock();
   
-  fprintf(stdout, "nl_coordinate = {%f, %f}\n", self.nl_coordinate.latitude, self.nl_coordinate.longitude);
-  fprintf(stdout, "nl_coordinateSpan = {%f, %f}\n", self.nl_coordinateSpan.latitudeDelta, self.nl_coordinateSpan.longitudeDelta);
+  fprintf(stdout, "demo_coordinate = {%f, %f}\n", self.demo_coordinate.latitude, self.demo_coordinate.longitude);
+  fprintf(stdout, "demo_coordinateSpan = {%f, %f}\n", self.demo_coordinateSpan.latitudeDelta, self.demo_coordinateSpan.longitudeDelta);
   
-  fprintf(stdout, "nl_cmtime = ");
-  CMTimeShow(self.nl_cmtime);
+  fprintf(stdout, "demo_cmtime = ");
+  CMTimeShow(self.demo_cmtime);
   
-  fprintf(stdout, "nl_cmtimeRange = ");
-  CMTimeRangeShow(self.nl_cmtimeRange);
+  fprintf(stdout, "demo_cmtimeRange = ");
+  CMTimeRangeShow(self.demo_cmtimeRange);
   
-  CFStringRef sourceStringRef = CMTimeRangeCopyDescription(CFAllocatorGetDefault(), self.nl_cmtimeMapping.source);
-  CFStringRef targetStringRef = CMTimeRangeCopyDescription(CFAllocatorGetDefault(), self.nl_cmtimeMapping.target);
-  fprintf(stdout, "nl_cmtimeMapping = {%s,%s}\n", [((__bridge NSString *)sourceStringRef) cStringUsingEncoding:NSUTF8StringEncoding], [((__bridge NSString *)targetStringRef) cStringUsingEncoding:NSUTF8StringEncoding]);
+  CFStringRef sourceStringRef = CMTimeRangeCopyDescription(CFAllocatorGetDefault(), self.demo_cmtimeMapping.source);
+  CFStringRef targetStringRef = CMTimeRangeCopyDescription(CFAllocatorGetDefault(), self.demo_cmtimeMapping.target);
+  fprintf(stdout, "demo_cmtimeMapping = {%s,%s}\n", [((__bridge NSString *)sourceStringRef) cStringUsingEncoding:NSUTF8StringEncoding], [((__bridge NSString *)targetStringRef) cStringUsingEncoding:NSUTF8StringEncoding]);
   
-  fprintf(stdout, "nl_scnvector3 = {%f, %f, %f}\n", self.nl_scnvector3.x, self.nl_scnvector3.y, self.nl_scnvector3.z);
-  fprintf(stdout, "nl_scnvector4 = {%f, %f, %f, %f}\n", self.nl_scnvector4.x, self.nl_scnvector4.y, self.nl_scnvector4.z, self.nl_scnvector4.w);
-  fprintf(stdout, "nl_matrix4 is equal SCNMatrix4MakeScale(1.0, 1.0, 1.0) = %s\n", SCNMatrix4EqualToMatrix4(self.nl_matrix4, SCNMatrix4MakeScale(1.0, 1.0, 1.0)) ? "YES" : "NO");
+  fprintf(stdout, "demo_scnvector3 = {%f, %f, %f}\n", self.demo_scnvector3.x, self.demo_scnvector3.y, self.demo_scnvector3.z);
+  fprintf(stdout, "demo_scnvector4 = {%f, %f, %f, %f}\n", self.demo_scnvector4.x, self.demo_scnvector4.y, self.demo_scnvector4.z, self.demo_scnvector4.w);
+  fprintf(stdout, "demo_matrix4 is equal SCNMatrix4MakeScale(1.0, 1.0, 1.0) = %s\n", SCNMatrix4EqualToMatrix4(self.demo_matrix4, SCNMatrix4MakeScale(1.0, 1.0, 1.0)) ? "YES" : "NO");
   
-  fprintf(stdout, "nl_strongObject = {%s}\n", [[self.nl_strongObject description] cStringUsingEncoding:NSUTF8StringEncoding]);
+  fprintf(stdout, "demo_strongObject = {%s}\n", [[self.demo_strongObject description] cStringUsingEncoding:NSUTF8StringEncoding]);
   
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-    self.nl_strongObject = nil;
-    self.nl_weakObject = nil;
+    self.demo_strongObject = nil;
+    self.demo_weakObject = nil;
   });
 }
 
@@ -224,40 +229,40 @@
 
 
 
-@implementation ViewController (nl_ex)
+@implementation ViewController (demo_ex)
 
-@dynamic nl_uint;
-@dynamic nl_long;
-@dynamic nl_double;
-@dynamic nl_float;
-@dynamic nl_char;
-@dynamic nl_bool;
-@dynamic nl_object;
-@dynamic nl_int;
+@dynamic demo_uint;
+@dynamic demo_long;
+@dynamic demo_double;
+@dynamic demo_float;
+@dynamic demo_char;
+@dynamic demo_bool;
+@dynamic demo_object;
+@dynamic demo_int;
 
-@dynamic nl_rect;
-@dynamic nl_point;
-@dynamic nl_size;
-@dynamic nl_affineTransform;
-@dynamic nl_vector;
-@dynamic nl_offset;
-@dynamic nl_transform3D;
-@dynamic nl_edgeInsets;
+@dynamic demo_rect;
+@dynamic demo_point;
+@dynamic demo_size;
+@dynamic demo_affineTransform;
+@dynamic demo_vector;
+@dynamic demo_offset;
+@dynamic demo_transform3D;
+@dynamic demo_edgeInsets;
 
-@dynamic nl_cmtime;
-@dynamic nl_cmtimeMapping;
-@dynamic nl_cmtimeRange;
+@dynamic demo_cmtime;
+@dynamic demo_cmtimeMapping;
+@dynamic demo_cmtimeRange;
 
-@dynamic nl_coordinate;
-@dynamic nl_coordinateSpan;
+@dynamic demo_coordinate;
+@dynamic demo_coordinateSpan;
 
-@dynamic nl_copyBlock;
-@dynamic nl_weakObject;
-@dynamic nl_strongObject;
+@dynamic demo_copyBlock;
+@dynamic demo_weakObject;
+@dynamic demo_strongObject;
 
-@dynamic nl_matrix4;
-@dynamic nl_scnvector4;
-@dynamic nl_scnvector3;
+@dynamic demo_matrix4;
+@dynamic demo_scnvector4;
+@dynamic demo_scnvector3;
 
 @end
 

@@ -63,18 +63,16 @@
  ```
  
  ## 自定义属性前辍
-  　可以在 `main` 方法中调用 C 函数 `nl_dynamicPropertySetPrefix` 设置前辍。
- ```
- int main(int argc, char * argv[]) {
-   @autoreleasepool {
-     nl_dynamicPropertySetPrefix("af_");
-     return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
-   }
- }
- ```
  
-  　虽然可以设置前辍为 NULL 或 ""，但不建议这么设置。因为可能会有效率影响；CoreData 自定义的模型也是动态属性，可能会有 bug；
  
+  可以通过定义宏：DynamicPropertySetPrefix 来定义动态属性的前辍名
+  前辍名长度不能为 0，你应该定义成字母加下划线的形式，如下
+ 
+  注意，要在 m 文件中调用
+ 
+  ```
+  DynamicPropertySetPrefix("demo_")
+  ```
  
   　如果你有好的 idea，请随时提 issue 或 request。
  */
@@ -93,28 +91,7 @@
 
 @end
 
-/**
- *  @brief 设置动态属性的前辍名
- *         注意，只有在 main.m 文件中先调用本方法才有效；只有能设置一次，多次赋值会被忽略
- *         可以为 NULL 和 ""，但不建议这么设置
- *
-```
-int main(int argc, char * argv[]) {
-  @autoreleasepool {
-    nl_dynamicPropertySetPrefix("af_");
-    return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
- }
-}
-```
- *
- *  @param prefix 前辍字符串
- */
-extern void nl_dynamicPropertySetPrefix(const char * _Nullable prefix);
 
-/**
- *  @brief 动态属性前辍名
- *
- *  @return 前辍字符串
- */
-extern const char * _Nullable nl_dynamicPropertyPrefix();
+
+
 

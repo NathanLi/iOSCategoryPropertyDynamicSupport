@@ -11,6 +11,7 @@
 		5A4C706A1C21B47A00DDBFE5 /* NSObject+nl_dynamicPropertyCustomeStruct.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A4C70641C21B47A00DDBFE5 /* NSObject+nl_dynamicPropertyCustomeStruct.m */; };
 		5A4C706B1C21B47A00DDBFE5 /* NSObject+nl_dynamicPropertyStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A4C70661C21B47A00DDBFE5 /* NSObject+nl_dynamicPropertyStore.m */; };
 		5A4C706C1C21B47A00DDBFE5 /* NSObject+nl_dynamicPropertySupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A4C70681C21B47A00DDBFE5 /* NSObject+nl_dynamicPropertySupport.m */; };
+		5A71A8431DEC62A50036B64B /* NLDynamicPropertyPrefix.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A71A8421DEC62A50036B64B /* NLDynamicPropertyPrefix.m */; };
 		D8B811A81C04913900AD7F84 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B811A71C04913900AD7F84 /* main.m */; };
 		D8B811AB1C04913900AD7F84 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B811AA1C04913900AD7F84 /* AppDelegate.m */; };
 		D8B811AE1C04913900AD7F84 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B811AD1C04913900AD7F84 /* ViewController.m */; };
@@ -30,6 +31,8 @@
 		5A4C70661C21B47A00DDBFE5 /* NSObject+nl_dynamicPropertyStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+nl_dynamicPropertyStore.m"; sourceTree = "<group>"; };
 		5A4C70671C21B47A00DDBFE5 /* NSObject+nl_dynamicPropertySupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+nl_dynamicPropertySupport.h"; sourceTree = "<group>"; };
 		5A4C70681C21B47A00DDBFE5 /* NSObject+nl_dynamicPropertySupport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+nl_dynamicPropertySupport.m"; sourceTree = "<group>"; };
+		5A71A8411DEC62A50036B64B /* NLDynamicPropertyPrefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NLDynamicPropertyPrefix.h; sourceTree = "<group>"; };
+		5A71A8421DEC62A50036B64B /* NLDynamicPropertyPrefix.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NLDynamicPropertyPrefix.m; sourceTree = "<group>"; };
 		D8B811A31C04913900AD7F84 /* CategoryPropertyDynamicSupport.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CategoryPropertyDynamicSupport.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8B811A71C04913900AD7F84 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		D8B811A91C04913900AD7F84 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -60,6 +63,8 @@
 		5A4C70601C21B47A00DDBFE5 /* NSObject+nl_dynamicPropertySupport */ = {
 			isa = PBXGroup;
 			children = (
+				5A71A8411DEC62A50036B64B /* NLDynamicPropertyPrefix.h */,
+				5A71A8421DEC62A50036B64B /* NLDynamicPropertyPrefix.m */,
 				5A4C70671C21B47A00DDBFE5 /* NSObject+nl_dynamicPropertySupport.h */,
 				5A4C70681C21B47A00DDBFE5 /* NSObject+nl_dynamicPropertySupport.m */,
 				5A4C70611C21B47A00DDBFE5 /* NLPropertyDescriptor.h */,
@@ -191,6 +196,7 @@
 				D8B811AE1C04913900AD7F84 /* ViewController.m in Sources */,
 				D8B811AB1C04913900AD7F84 /* AppDelegate.m in Sources */,
 				D8B811A81C04913900AD7F84 /* main.m in Sources */,
+				5A71A8431DEC62A50036B64B /* NLDynamicPropertyPrefix.m in Sources */,
 				5A4C70691C21B47A00DDBFE5 /* NLPropertyDescriptor.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

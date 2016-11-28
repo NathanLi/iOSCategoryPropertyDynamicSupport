@@ -14,6 +14,7 @@
 
 #import "NSObject+nl_dynamicPropertyStore.h"
 #import "NSObject+nl_dynamicPropertySupport.h"
+#import "NLDynamicPropertyPrefix.h"
 
 @implementation NSObject (nl_dynamicPropertyStore)
 

@@ -11,6 +11,7 @@
 #import "NLPropertyDescriptor.h"
 #import "NSObject+nl_dynamicPropertySupport.h"
 #import <objc/runtime.h>
+#import "NLDynamicPropertyPrefix.h"
 
 typedef int64_t NLCMTimeValue;
 typedef int32_t NLCMTimeScale;
@@ -394,10 +395,22 @@ NLDefineDynamicIMPCustomeStructType(NLSCNMatrix4);
 
 #pragma mark - KVC
 - (void)custome_nl_setValue:(id)value forKey:(NSString *)key {
-  if (![key hasPrefix:@"nl_"]) {
+  // 名字得以 staticPropertyNamePrefix 为前辍
+  static NSString *staticPropertyNamePrefix = nil;
+  
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    const char *prefix = nl_dynamicPropertyPrefix();
+    if (prefix != NULL) {
+      staticPropertyNamePrefix = [NSString stringWithCString:prefix encoding:NSUTF8StringEncoding];
+    }
+  });
+  
+  if (staticPropertyNamePrefix == NULL || ![key hasPrefix:staticPropertyNamePrefix]) {
     [self custome_nl_setValue:value forKey:key];
     return;
   }
+
   
   NSArray *propertyDescriptors = [self.class nl_dynamicPropertyDescriptors];
   NLPropertyDescriptor *keyPropertyDescriptor = nil;

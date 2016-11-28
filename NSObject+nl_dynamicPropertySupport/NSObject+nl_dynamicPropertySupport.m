@@ -9,6 +9,7 @@
 #import "NSObject+nl_dynamicPropertySupport.h"
 #import <objc/runtime.h>
 #import "NSObject+nl_dynamicPropertyStore.h"
+#import "NLDynamicPropertyPrefix.h"
 
 /**
  * 基本数据类型的 getter 方法名
@@ -170,15 +171,17 @@ id __NL__object_dynamicGetterWeakIMP(id self, SEL _cmd) {
  */
 - (void)nl_setValue:(id)value forKey:(NSString *)key {
   // 名字得以 staticPropertyNamePrefix 为前辍
-  static const char *staticPropertyNamePrefix = NULL;
+  static NSString *staticPropertyNamePrefix = nil;
   
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
-    staticPropertyNamePrefix = nl_dynamicPropertyPrefix();
+    const char *prefix = nl_dynamicPropertyPrefix();
+    if (prefix != NULL) {
+      staticPropertyNamePrefix = [NSString stringWithCString:prefix encoding:NSUTF8StringEncoding];
+    }
   });
   
-  if (staticPropertyNamePrefix == NULL ||
-      ![key hasPrefix:[NSString stringWithCString:staticPropertyNamePrefix encoding:NSUTF8StringEncoding]]) {
+  if (staticPropertyNamePrefix == NULL || ![key hasPrefix:staticPropertyNamePrefix]) {
     [self nl_setValue:value forKey:key];
     return;
   }
@@ -493,16 +496,4 @@ id __NL__object_dynamicGetterWeakIMP(id self, SEL _cmd) {
 
 @end
 
-#define kNLDynamicPropertyPrefixDefaultValue "nl_"
-
-static const char *kNLDynamicPropertyPrefix = kNLDynamicPropertyPrefixDefaultValue;
-void nl_dynamicPropertySetPrefix(const char *prefix) {
-  if (kNLDynamicPropertyPrefix == kNLDynamicPropertyPrefixDefaultValue) {
-    kNLDynamicPropertyPrefix = prefix;
-  }
-}
-
-const char *nl_dynamicPropertyPrefix() {
-  return kNLDynamicPropertyPrefix;
-}
 
