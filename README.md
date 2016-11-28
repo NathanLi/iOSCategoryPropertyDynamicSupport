@@ -50,17 +50,10 @@ iOS Class Category property dynamic support
  ```
  
 ##自定义属性前辍  
-  　可以在 `main` 方法中调用 C 函数 `nl_dynamicPropertySetPrefix` 设置前辍。  
- ```C
- int main(int argc, char * argv[]) {
-   @autoreleasepool {
-     nl_dynamicPropertySetPrefix("af_");
-     return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
-   }
- }
- ```
- 
-  　虽然可以设置前辍为 NULL 或 ""，但不建议这么设置。因为可能会有效率影响；CoreData 自定义的模型也是动态属性，如果属性长度为0的话且用了 CoreData 的话，可能会有 bug；  
+  1、`#import "NLDynamicPropertyPrefix.h"`
+  2、 设置前辍 `DynamicPropertySetPrefix("demo_")`
+  注意，要在 m 文件中调用。前辍名长度不能为 0，你应该定义成字母加下划线的形式
+  
  
  
   　如果你有好的 idea 或 疑问，请随时提 issue 或 request。 
